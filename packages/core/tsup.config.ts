@@ -6,8 +6,8 @@ import {defineConfig} from 'tsup'
 
 export default defineConfig(() => {
   const common: Options = {
-    entry: ['src/index.ts'],
-    bundle: true,
+    entry: ['src'],
+    bundle: false,
     clean: true,
     keepNames: true,
     minify: false,
@@ -28,13 +28,13 @@ export default defineConfig(() => {
   const esm: Options = {
     ...common,
     format: 'esm',
-    outDir: './dist'
+    outDir: './dist/esm'
   }
 
   const cjs: Options = {
     ...common,
     format: 'cjs',
-    outDir: './dist'
+    outDir: './dist/cjs'
   }
 
   return [esm, cjs]
