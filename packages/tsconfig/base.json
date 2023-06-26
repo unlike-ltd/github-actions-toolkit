@@ -7,7 +7,7 @@
     "@tsconfig/esm/tsconfig.json"
   ],
   "compilerOptions": {
-    "moduleResolution": "nodenext",
+    "moduleResolution": "node16",
     "resolveJsonModule": true
   },
   "exclude": ["node_modules"]
