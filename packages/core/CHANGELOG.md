@@ -1,5 +1,11 @@
 # @unlike/github-actions-core
 
+## 0.0.6
+
+### Patch Changes
+
+- 874f5ab: fix tree-shaking
+
 ## 0.0.5
 
 ### Patch Changes
