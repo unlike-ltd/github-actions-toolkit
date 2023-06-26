@@ -1,13 +1,13 @@
+// @ts-check
+
 import type {Options} from 'tsup'
 
 import {defineConfig} from 'tsup'
 
-// @ts-check
-
 export default defineConfig(() => {
   const common: Options = {
-    entry: ['src'],
-    bundle: false,
+    entry: ['src/index.ts'],
+    bundle: true,
     clean: true,
     keepNames: true,
     minify: false,
@@ -19,7 +19,7 @@ export default defineConfig(() => {
     // legacyOutput: true,
     splitting: false,
     treeshake: false,
-    dts: false,
+    dts: true,
     platform: 'node',
     target: 'node16.20.0',
     shims: true
@@ -28,13 +28,13 @@ export default defineConfig(() => {
   const esm: Options = {
     ...common,
     format: 'esm',
-    outDir: './dist/esm'
+    outDir: './dist'
   }
 
   const cjs: Options = {
     ...common,
     format: 'cjs',
-    outDir: './dist/cjs'
+    outDir: './dist'
   }
 
   return [esm, cjs]
