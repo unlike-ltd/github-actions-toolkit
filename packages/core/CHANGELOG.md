@@ -1,5 +1,11 @@
 # @unlike/github-actions-core
 
+## 0.0.5
+
+### Patch Changes
+
+- 342b880: feat: improve type definitions using tsup
+
 ## 0.0.4
 
 ### Patch Changes
