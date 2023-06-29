@@ -28,7 +28,7 @@ jobs:
       - name: Setup Node.js Pnpm & install dependencies
         uses: unlike-ltd/github-actions/setup-pnpm@v0.0.2
         with:
-          node-version: 16.x
+          node-version: 18.x
 
       - name: Creating .npmrc
         run: |

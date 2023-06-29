@@ -3,11 +3,9 @@
   "display": "Default",
   "extends": [
     "@tsconfig/strictest/tsconfig.json",
-    "@tsconfig/node16/tsconfig.json",
-    "@tsconfig/esm/tsconfig.json"
+    "@tsconfig/node18/tsconfig.json"
   ],
   "compilerOptions": {
-    "moduleResolution": "node16",
     "resolveJsonModule": true
   },
   "exclude": ["node_modules"]
