@@ -4,7 +4,6 @@
   "eslint.enable": true,
   "eslint.validate": ["javascript", "typescript"],
   "prettier.enable": true,
-  "prettier.prettierPath": "node_modules/prettier",
   "javascript.preferences.importModuleSpecifierEnding": "js",
   "typescript.preferences.importModuleSpecifierEnding": "js",
   "search.exclude": {

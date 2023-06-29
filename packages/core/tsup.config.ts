@@ -21,21 +21,15 @@ export default defineConfig(() => {
     treeshake: false,
     dts: true,
     platform: 'node',
-    target: 'node16.20.0',
+    target: 'node18.16.1',
     shims: true
   }
 
   const esm: Options = {
     ...common,
     format: 'esm',
-    outDir: './dist/esm'
+    outDir: './dist'
   }
 
-  const cjs: Options = {
-    ...common,
-    format: 'cjs',
-    outDir: './dist/cjs'
-  }
-
-  return [esm, cjs]
+  return [esm]
 })

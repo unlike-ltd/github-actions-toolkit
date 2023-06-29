@@ -13,15 +13,15 @@ describe('lib/utils', () => {
         startLine: 5,
         endLine: 5
       })
-      expect(commandProperties.title).toBe('A title')
-      expect(commandProperties.file).toBe('root/test.txt')
-      expect(commandProperties.col).toBe(1)
-      expect(commandProperties.endColumn).toBe(2)
-      expect(commandProperties.line).toBe(5)
-      expect(commandProperties.endLine).toBe(5)
+      expect(commandProperties['title']).toBe('A title')
+      expect(commandProperties['file']).toBe('root/test.txt')
+      expect(commandProperties['col']).toBe(1)
+      expect(commandProperties['endColumn']).toBe(2)
+      expect(commandProperties['line']).toBe(5)
+      expect(commandProperties['endLine']).toBe(5)
 
-      expect(commandProperties.startColumn).toBeUndefined()
-      expect(commandProperties.startLine).toBeUndefined()
+      expect(commandProperties['startColumn']).toBeUndefined()
+      expect(commandProperties['startLine']).toBeUndefined()
     })
   })
 })
