@@ -7,7 +7,7 @@ const config = {
     'plugin:@typescript-eslint/recommended',
     'plugin:unicorn/all',
     'turbo',
-    'prettier'
+    'plugin:prettier/recommended'
   ],
   plugins: ['@typescript-eslint'],
   parser: '@typescript-eslint/parser',
