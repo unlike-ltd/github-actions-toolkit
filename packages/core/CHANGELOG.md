@@ -1,5 +1,11 @@
 # @unlike/github-actions-core
 
+## 0.1.0
+
+### Minor Changes
+
+- e877494: node 18 & esm only support
+
 ## 0.0.6
 
 ### Patch Changes
