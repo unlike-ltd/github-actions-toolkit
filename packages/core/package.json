@@ -13,20 +13,10 @@
   "sideEffects": false,
   "exports": {
     "node": {
-      "import": {
         "types": "./dist/esm/index.d.ts",
-        "default": "./dist/esm/index.js"
-      },
-      "require": {
-        "types": "./dist/cjs/index.d.cts",
-        "default": "./dist/cjs/index.cjs"
+      "import": "./dist/esm/index.js"
       }
     },
-    "types": "./dist/cjs/index.d.cts",
-    "default": "./dist/cjs/index.cjs"
-  },
-  "types": "./dist/esm/index.d.ts",
-  "main": "./dist/esm/index.js",
   "files": [
     "dist"
   ],
@@ -39,15 +29,16 @@
     "directory": "packages/core"
   },
   "scripts": {
-    "test": "echo \"Error: run tests from root\" && exit 1",
     "build": "rm -rf dist && tsup-node",
-    "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist"
+    "clean": "rm -rf .turbo node_modules dist",
+    "lint": "tsc --noEmit",
+    "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "bugs": {
     "url": "https://github.com/unlike-ltd/github-actions-toolkit/issues"
   },
   "engines": {
-    "node": ">=v16.20.0"
+    "node": ">=16.20.0"
   },
   "dependencies": {
     "@actions/http-client": "^2.1.0"
