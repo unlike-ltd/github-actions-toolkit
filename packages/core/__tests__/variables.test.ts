@@ -1,16 +1,10 @@
+import type {SpyInstance} from 'vitest'
+
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 
-import {
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  SpyInstance,
-  test,
-  vi
-} from 'vitest'
+import {beforeAll, beforeEach, describe, expect, test, vi} from 'vitest'
 
 import {
   addPath,
