@@ -11,3 +11,23 @@ updates:
     directory: '/'
     schedule:
       interval: 'daily'
+    groups:
+      turbo:
+        patterns:
+          - 'turbo'
+          - 'eslint-config-turbo'
+      eslint:
+        patterns:
+          - 'eslint'
+          - 'eslint-plugin-*'
+          - 'eslint-config-*'
+          - '@typescript-eslint/*'
+        exclude:patterns:
+          - 'eslint-config-turbo'
+      bundler:
+        patterns:
+          - 'esbuild'
+          - 'tsup'
+      tsconfig:
+        patterns:
+          - '@tsconfig/*'
