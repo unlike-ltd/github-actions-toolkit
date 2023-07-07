@@ -547,12 +547,12 @@ describe('rmRF', () => {
       const directory: string = path.join(root, '%test%')
       await io.mkdirP(root)
       await io.mkdirP(directory)
-      const oldEnv = process.env['test']
-      process.env['test'] = 'thisshouldnotresolve'
+
+      vi.stubEnv('test', 'thisshouldnotresolve')
 
       await io.rmRF(directory)
       await assertNotExists(directory)
-      process.env['test'] = oldEnv
+      vi.unstubAllEnvs()
     })
 
     test('should throw for invalid characters', async () => {
@@ -865,53 +865,48 @@ describe('which', () => {
       chmod(filePath, '+x')
     }
 
-    const originalPath = process.env['PATH']
-    try {
-      // update the PATH
-      process.env['PATH'] = `${process.env['PATH']}${path.delimiter}${testPath}`
+    vi.stubEnv('PATH', `${process.env['PATH']}${path.delimiter}${testPath}`)
 
-      // exact file name
-      await expect(io.which(fileName)).resolves.toBe(filePath)
-      await expect(io.which(fileName, false)).resolves.toBe(filePath)
-      await expect(io.which(fileName, true)).resolves.toBe(filePath)
+    // exact file name
+    await expect(io.which(fileName)).resolves.toBe(filePath)
+    await expect(io.which(fileName, false)).resolves.toBe(filePath)
+    await expect(io.which(fileName, true)).resolves.toBe(filePath)
 
-      if (process.platform === 'win32') {
-        // not case sensitive on windows
-        await expect(io.which('which-test-file.exe')).resolves.toBe(
-          path.join(testPath, 'which-test-file.exe')
-        )
-        await expect(io.which('WHICH-TEST-FILE.EXE')).resolves.toBe(
-          path.join(testPath, 'WHICH-TEST-FILE.EXE')
-        )
-        await expect(io.which('WHICH-TEST-FILE.EXE', false)).resolves.toBe(
-          path.join(testPath, 'WHICH-TEST-FILE.EXE')
-        )
-        await expect(io.which('WHICH-TEST-FILE.EXE', true)).resolves.toBe(
-          path.join(testPath, 'WHICH-TEST-FILE.EXE')
-        )
+    if (process.platform === 'win32') {
+      // not case sensitive on windows
+      await expect(io.which('which-test-file.exe')).resolves.toBe(
+        path.join(testPath, 'which-test-file.exe')
+      )
+      await expect(io.which('WHICH-TEST-FILE.EXE')).resolves.toBe(
+        path.join(testPath, 'WHICH-TEST-FILE.EXE')
+      )
+      await expect(io.which('WHICH-TEST-FILE.EXE', false)).resolves.toBe(
+        path.join(testPath, 'WHICH-TEST-FILE.EXE')
+      )
+      await expect(io.which('WHICH-TEST-FILE.EXE', true)).resolves.toBe(
+        path.join(testPath, 'WHICH-TEST-FILE.EXE')
+      )
 
-        // without extension
-        await expect(io.which('which-test-file')).resolves.toBe(filePath)
-        await expect(io.which('which-test-file', false)).resolves.toBe(filePath)
-        await expect(io.which('which-test-file', true)).resolves.toBe(filePath)
-      } else if (process.platform === 'darwin') {
-        // not case sensitive on Mac
-        await expect(io.which(fileName.toUpperCase())).resolves.toBe(
-          path.join(testPath, fileName.toUpperCase())
-        )
-        await expect(io.which(fileName.toUpperCase(), false)).resolves.toBe(
-          path.join(testPath, fileName.toUpperCase())
-        )
-        await expect(io.which(fileName.toUpperCase(), true)).resolves.toBe(
-          path.join(testPath, fileName.toUpperCase())
-        )
-      } else {
-        // case sensitive on Linux
-        await expect(io.which(fileName.toUpperCase())).resolves.toBe('')
-      }
-    } finally {
-      process.env['PATH'] = originalPath
+      // without extension
+      await expect(io.which('which-test-file')).resolves.toBe(filePath)
+      await expect(io.which('which-test-file', false)).resolves.toBe(filePath)
+      await expect(io.which('which-test-file', true)).resolves.toBe(filePath)
+    } else if (process.platform === 'darwin') {
+      // not case sensitive on Mac
+      await expect(io.which(fileName.toUpperCase())).resolves.toBe(
+        path.join(testPath, fileName.toUpperCase())
+      )
+      await expect(io.which(fileName.toUpperCase(), false)).resolves.toBe(
+        path.join(testPath, fileName.toUpperCase())
+      )
+      await expect(io.which(fileName.toUpperCase(), true)).resolves.toBe(
+        path.join(testPath, fileName.toUpperCase())
+      )
+    } else {
+      // case sensitive on Linux
+      await expect(io.which(fileName.toUpperCase())).resolves.toBe('')
     }
+    vi.unstubAllEnvs()
   })
 
   test('which() not found', async () => {
@@ -939,20 +934,17 @@ describe('which', () => {
       chmod(filePath, '+x')
     }
 
-    const originalPath = process.env['PATH']
-    try {
-      // sanity - regular chcp.com/bash should be found
-      const originalWhich = await io.which(fileName)
-      expect(!!(originalWhich || '')).toBe(true)
+    // sanity - regular chcp.com/bash should be found
+    const originalWhich = await io.which(fileName)
+    expect(!!(originalWhich || '')).toBe(true)
 
-      // modify PATH
-      process.env['PATH'] = [testPath, process.env['PATH']].join(path.delimiter)
+    // modify PATH
+    vi.stubEnv('PATH', [testPath, process.env['PATH']].join(path.delimiter))
 
-      // override chcp.com/bash should be found
-      await expect(io.which(fileName)).resolves.toBe(filePath)
-    } finally {
-      process.env['PATH'] = originalPath
-    }
+    // override chcp.com/bash should be found
+    await expect(io.which(fileName)).resolves.toBe(filePath)
+
+    vi.unstubAllEnvs()
   })
 
   test('which() requires executable', async () => {
@@ -972,23 +964,79 @@ describe('which', () => {
       chmod(filePath, '-x')
     }
 
-    const originalPath = process.env['PATH']
-    try {
-      // modify PATH
-      process.env['PATH'] = [process.env['PATH'], testPath].join(path.delimiter)
+    vi.stubEnv('PATH', [process.env['PATH'], testPath].join(path.delimiter))
 
-      // should not be found
-      await expect(io.which(fileName)).resolves.toBe('')
-    } finally {
-      process.env['PATH'] = originalPath
-    }
+    // should not be found
+    await expect(io.which(fileName)).resolves.toBe('')
+
+    vi.unstubAllEnvs()
   })
 
-  // which permissions tests
-  test('which() finds executable with different permissions', async () => {
-    await findsExecutableWithScopedPermissions('u=rwx,g=r,o=r')
-    await findsExecutableWithScopedPermissions('u=rw,g=rx,o=r')
-    await findsExecutableWithScopedPermissions('u=rw,g=r,o=rx')
+  // eslint-disable-next-line vitest/require-hook
+  describe.skipIf(process.platform !== 'darwin')('for darwin', () => {
+    test.each(['u=rwx,g=r,o=r', 'u=rw,g=rx,o=r', 'u=rw,g=r,o=rx'])(
+      'which() finds executable with different permissions : %s',
+      async permission => {
+        const testPath = path.join(getTestTemp(), 'which-finds-file-name')
+        await io.mkdirP(testPath)
+        const fileName = 'Which-Test-File'
+
+        const filePath = path.join(testPath, fileName)
+        await fs.writeFile(filePath, '')
+        chmod(filePath, permission)
+
+        // update the PATH
+        vi.stubEnv('PATH', `${process.env['PATH']}${path.delimiter}${testPath}`)
+
+        expect.assertions(6)
+
+        // exact file name
+        await expect(io.which(fileName)).resolves.toBe(filePath)
+        await expect(io.which(fileName, false)).resolves.toBe(filePath)
+        await expect(io.which(fileName, true)).resolves.toBe(filePath)
+
+        // not case sensitive on Mac
+        await expect(io.which(fileName.toUpperCase())).resolves.toBe(
+          path.join(testPath, fileName.toUpperCase())
+        )
+        await expect(io.which(fileName.toUpperCase(), false)).resolves.toBe(
+          path.join(testPath, fileName.toUpperCase())
+        )
+        await expect(io.which(fileName.toUpperCase(), true)).resolves.toBe(
+          path.join(testPath, fileName.toUpperCase())
+        )
+
+        vi.unstubAllEnvs()
+      }
+    )
+  })
+
+  // eslint-disable-next-line vitest/require-hook
+  describe.skipIf(
+    process.platform === 'darwin' || process.platform === 'win32'
+  )('not darwin or win32', () => {
+    test.each(['u=rwx,g=r,o=r', 'u=rw,g=rx,o=r', 'u=rw,g=r,o=rx'])(
+      'which() finds executable with different permissions : %s',
+      async permission => {
+        const testPath = path.join(getTestTemp(), 'which-finds-file-name')
+        await io.mkdirP(testPath)
+        const fileName = 'Which-Test-File'
+
+        const filePath = path.join(testPath, fileName)
+        await fs.writeFile(filePath, '')
+        chmod(filePath, permission)
+
+        // update the PATH
+        vi.stubEnv('PATH', `${process.env['PATH']}${path.delimiter}${testPath}`)
+
+        expect.assertions(1)
+
+        // case sensitive on Linux
+        await expect(io.which(fileName.toUpperCase())).resolves.toBe('')
+
+        vi.unstubAllEnvs()
+      }
+    )
   })
 
   test('which() ignores directory match', async () => {
@@ -1004,16 +1052,11 @@ describe('which', () => {
       chmod(dirPath, '+x')
     }
 
-    const originalPath = process.env['PATH']
-    try {
-      // modify PATH
-      process.env['PATH'] = [process.env['PATH'], testPath].join(path.delimiter)
+    vi.stubEnv('PATH', [process.env['PATH'], testPath].join(path.delimiter))
 
-      // should not be found
-      await expect(io.which(path.basename(dirPath))).resolves.toBe('')
-    } finally {
-      process.env['PATH'] = originalPath
-    }
+    // should not be found
+    await expect(io.which(path.basename(dirPath))).resolves.toBe('')
+    vi.unstubAllEnvs()
   })
 
   test('which() allows rooted path', async () => {
@@ -1123,21 +1166,17 @@ describe('which', () => {
       chmod(filePath, '+x')
     }
 
-    const originalPath = process.env['PATH']
-    try {
-      // modify PATH
-      process.env['PATH'] = [process.env['PATH'], testPath].join(path.delimiter)
+    vi.stubEnv('PATH', [process.env['PATH'], testPath].join(path.delimiter))
 
-      // which "dir/file", should not be found
-      await expect(io.which(`${testDirName}/${fileName}`)).resolves.toBe('')
+    // which "dir/file", should not be found
+    await expect(io.which(`${testDirName}/${fileName}`)).resolves.toBe('')
 
-      // on Windows, also try "dir\file"
-      if (process.platform === 'win32') {
-        await expect(io.which(`${testDirName}\\${fileName}`)).resolves.toBe('')
-      }
-    } finally {
-      process.env['PATH'] = originalPath
+    // on Windows, also try "dir\file"
+    if (process.platform === 'win32') {
+      await expect(io.which(`${testDirName}\\${fileName}`)).resolves.toBe('')
     }
+
+    vi.unstubAllEnvs()
   })
 
   if (process.platform === 'win32') {
@@ -1170,20 +1209,13 @@ describe('which', () => {
         await fs.writeFile(file, '')
       }
 
-      const originalPath = process.env['PATH']
-      try {
-        // modify PATH
-        process.env[
-          'PATH'
-        ] = `${process.env['PATH']}${path.delimiter}${testPath}`
+      vi.stubEnv('PATH', `${process.env['PATH']}${path.delimiter}${testPath}`)
 
-        // find each file
-        for (const fileName of Object.keys(files)) {
-          await expect(io.which(fileName)).resolves.toBe(files[fileName])
-        }
-      } finally {
-        process.env['PATH'] = originalPath
+      // find each file
+      for (const fileName of Object.keys(files)) {
+        await expect(io.which(fileName)).resolves.toBe(files[fileName])
       }
+      vi.unstubAllEnvs()
     })
 
     test('which() appends ext on windows when rooted', async () => {
@@ -1245,15 +1277,11 @@ describe('which', () => {
       const notExpectedFilePath = path.join(testPath, `${fileName}.exe`)
       await fs.writeFile(expectedFilePath, '')
       await fs.writeFile(notExpectedFilePath, '')
-      const originalPath = process.env['PATH']
-      try {
-        process.env[
-          'PATH'
-        ] = `${process.env['PATH']}${path.delimiter}${testPath}`
-        await expect(io.which(fileName)).resolves.toBe(expectedFilePath)
-      } finally {
-        process.env['PATH'] = originalPath
-      }
+
+      vi.stubEnv('PATH', `${process.env['PATH']}${path.delimiter}${testPath}`)
+
+      await expect(io.which(fileName)).resolves.toBe(expectedFilePath)
+      vi.unstubAllEnvs()
     })
 
     test('which() prefer exact match on windows when rooted', async () => {
@@ -1345,33 +1373,31 @@ describe('which', () => {
       await fs.writeFile(cmdFilePath, '')
 
       const originalPath = process.env['PATH']
-      try {
-        // test .COM
-        process.env['PATH'] = `${comTestPath}${path.delimiter}${originalPath}`
-        await expect(io.which(fileNameWithoutExtension)).resolves.toBe(
-          path.join(comTestPath, `${fileNameWithoutExtension}.com`)
-        )
 
-        // test .EXE
-        process.env['PATH'] = `${exeTestPath}${path.delimiter}${originalPath}`
-        await expect(io.which(fileNameWithoutExtension)).resolves.toBe(
-          path.join(exeTestPath, `${fileNameWithoutExtension}.exe`)
-        )
+      vi.stubEnv('PATH', `${comTestPath}${path.delimiter}${originalPath}`)
+      await expect(io.which(fileNameWithoutExtension)).resolves.toBe(
+        path.join(comTestPath, `${fileNameWithoutExtension}.com`)
+      )
 
-        // test .BAT
-        process.env['PATH'] = `${batTestPath}${path.delimiter}${originalPath}`
-        await expect(io.which(fileNameWithoutExtension)).resolves.toBe(
-          path.join(batTestPath, `${fileNameWithoutExtension}.bat`)
-        )
+      // test .EXE
+      vi.stubEnv('PATH', `${exeTestPath}${path.delimiter}${originalPath}`)
+      await expect(io.which(fileNameWithoutExtension)).resolves.toBe(
+        path.join(exeTestPath, `${fileNameWithoutExtension}.exe`)
+      )
 
-        // test .CMD
-        process.env['PATH'] = `${cmdTestPath}${path.delimiter}${originalPath}`
-        await expect(io.which(fileNameWithoutExtension)).resolves.toBe(
-          path.join(cmdTestPath, `${fileNameWithoutExtension}.cmd`)
-        )
-      } finally {
-        process.env['PATH'] = originalPath
-      }
+      // test .BAT
+      vi.stubEnv('PATH', `${batTestPath}${path.delimiter}${originalPath}`)
+      await expect(io.which(fileNameWithoutExtension)).resolves.toBe(
+        path.join(batTestPath, `${fileNameWithoutExtension}.bat`)
+      )
+
+      // test .CMD
+      vi.stubEnv('PATH', `${cmdTestPath}${path.delimiter}${originalPath}`)
+      await expect(io.which(fileNameWithoutExtension)).resolves.toBe(
+        path.join(cmdTestPath, `${fileNameWithoutExtension}.cmd`)
+      )
+
+      vi.unstubAllEnvs()
     })
   }
 })
@@ -1409,65 +1435,14 @@ describe('findInPath', () => {
       }
     }
 
-    const originalPath = process.env['PATH']
-    try {
-      // update the PATH
-      for (const testPath of testPaths) {
-        process.env[
-          'PATH'
-        ] = `${process.env['PATH']}${path.delimiter}${testPath}`
-      }
-      // exact file names
-      await expect(io.findInPath(fileName)).resolves.toStrictEqual(filePaths)
-    } finally {
-      process.env['PATH'] = originalPath
+    for (const testPath of testPaths) {
+      vi.stubEnv('PATH', `${process.env['PATH']}${path.delimiter}${testPath}`)
     }
+    // exact file names
+    await expect(io.findInPath(fileName)).resolves.toStrictEqual(filePaths)
+    vi.unstubAllEnvs()
   })
 })
-
-const findsExecutableWithScopedPermissions = async (
-  chmodOptions: string
-): Promise<void> => {
-  // create a executable file
-  const testPath = path.join(getTestTemp(), 'which-finds-file-name')
-  await io.mkdirP(testPath)
-  const fileName = 'Which-Test-File'
-  if (process.platform === 'win32') {
-    return
-  }
-
-  const filePath = path.join(testPath, fileName)
-  await fs.writeFile(filePath, '')
-  chmod(filePath, chmodOptions)
-
-  try {
-    // update the PATH
-    vi.stubEnv('PATH', `${process.env['PATH']}${path.delimiter}${testPath}`)
-
-    // exact file name
-    await expect(io.which(fileName)).resolves.toBe(filePath)
-    await expect(io.which(fileName, false)).resolves.toBe(filePath)
-    await expect(io.which(fileName, true)).resolves.toBe(filePath)
-
-    if (process.platform === 'darwin') {
-      // not case sensitive on Mac
-      await expect(io.which(fileName.toUpperCase())).resolves.toBe(
-        path.join(testPath, fileName.toUpperCase())
-      )
-      await expect(io.which(fileName.toUpperCase(), false)).resolves.toBe(
-        path.join(testPath, fileName.toUpperCase())
-      )
-      await expect(io.which(fileName.toUpperCase(), true)).resolves.toBe(
-        path.join(testPath, fileName.toUpperCase())
-      )
-    } else {
-      // case sensitive on Linux
-      await expect(io.which(fileName.toUpperCase())).resolves.toBe('')
-    }
-  } finally {
-    vi.unstubAllEnvs()
-  }
-}
 
 // Assert that a file exists
 async function assertExists(filePath: string): Promise<void> {
