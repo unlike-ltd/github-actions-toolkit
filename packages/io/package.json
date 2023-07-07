@@ -1,13 +1,13 @@
 {
-  "name": "@unlike/github-actions-core",
-  "version": "0.1.0",
-  "description": "Actions core lib",
+  "name": "@unlike/github-actions-io",
+  "version": "0.0.0",
+  "description": "Actions io lib",
   "keywords": [
     "github",
     "actions",
-    "core"
+    "io"
   ],
-  "homepage": "https://github.com/unlike-ltd/github-actions-toolkit/tree/main/packages/core",
+  "homepage": "https://github.com/unlike-ltd/github-actions-toolkit/tree/main/packages/io",
   "license": "MIT",
   "type": "module",
   "sideEffects": false,
@@ -23,8 +23,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/unlike-ltd/github-actions-toolkit.git",
-    "directory": "packages/core"
+    "url": "https://github.com/unlike-ltd/github-actions-toolkit.git",
+    "directory": "packages/io"
   },
   "scripts": {
     "build": "rm -rf dist && tsup-node",
@@ -37,9 +37,6 @@
   },
   "engines": {
     "node": ">=18.16.1"
-  },
-  "dependencies": {
-    "@actions/http-client": "^2.1.0"
   },
   "devDependencies": {
     "esbuild": "0.18.11",
