@@ -184,8 +184,8 @@ export const which = async (tool: string, check?: boolean): Promise<string> => {
 
   const matches: string[] = await findInPath(tool)
 
-  if (matches && matches.length > 0 && typeof matches[0] === 'string') {
-    return matches[0]
+  if (matches && matches.length > 0) {
+    return matches[0] as string
   }
 
   return ''

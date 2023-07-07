@@ -990,10 +990,10 @@ describe('which', () => {
         // update the PATH
         vi.stubEnv('PATH', `${process.env['PATH']}${path.delimiter}${testPath}`)
 
-        expect.assertions(5)
+        expect.assertions(6)
 
         // exact file name
-        // await expect(io.which(fileName)).resolves.toBe(filePath)
+        await expect(io.which(fileName)).resolves.toBe(filePath)
         await expect(io.which(fileName, false)).resolves.toBe(filePath)
         await expect(io.which(fileName, true)).resolves.toBe(filePath)
 
@@ -1031,9 +1031,9 @@ describe('which', () => {
         // update the PATH
         vi.stubEnv('PATH', `${process.env['PATH']}${path.delimiter}${testPath}`)
 
-        expect.assertions(3)
+        expect.assertions(4)
 
-        // await expect(io.which(fileName)).resolves.toBe(filePath)
+        await expect(io.which(fileName)).resolves.toBe(filePath)
         await expect(io.which(fileName, false)).resolves.toBe(filePath)
         await expect(io.which(fileName, true)).resolves.toBe(filePath)
 
