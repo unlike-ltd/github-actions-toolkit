@@ -1,6 +1,13 @@
-import {ok} from 'assert'
-import * as path from 'path'
-import * as ioUtil from './io-util'
+/* eslint-disable unicorn/no-keyword-prefix */
+/* eslint-disable unicorn/no-negated-condition */
+/* eslint-disable unicorn/no-lonely-if */
+/* eslint-disable unicorn/no-await-expression-member */
+/* eslint-disable unicorn/no-null */
+
+import {ok} from 'node:assert'
+import path from 'node:path'
+
+import * as ioUtil from './io-util.js'
 
 /**
  * Interface for cp/mv options
@@ -30,11 +37,11 @@ export interface MoveOptions {
  * @param     dest      destination path
  * @param     options   optional. See CopyOptions.
  */
-export async function cp(
+export const cp = async (
   source: string,
   dest: string,
   options: CopyOptions = {}
-): Promise<void> {
+): Promise<void> => {
   const {force, recursive, copySourceDirectory} = readCopyOptions(options)
 
   const destStat = (await ioUtil.exists(dest)) ? await ioUtil.stat(dest) : null
@@ -79,11 +86,11 @@ export async function cp(
  * @param     dest      destination path
  * @param     options   optional. See MoveOptions.
  */
-export async function mv(
+export const mv = async (
   source: string,
   dest: string,
   options: MoveOptions = {}
-): Promise<void> {
+): Promise<void> => {
   if (await ioUtil.exists(dest)) {
     let destExists = true
     if (await ioUtil.isDirectory(dest)) {
@@ -109,11 +116,11 @@ export async function mv(
  *
  * @param inputPath path to remove
  */
-export async function rmRF(inputPath: string): Promise<void> {
+export const rmRF = async (inputPath: string): Promise<void> => {
   if (ioUtil.IS_WINDOWS) {
     // Check for invalid characters
     // https://docs.microsoft.com/en-us/windows/win32/fileio/naming-a-file
-    if (/[*"<>|]/.test(inputPath)) {
+    if (/["*<>|]/.test(inputPath)) {
       throw new Error(
         'File path must not contain `*`, `"`, `<`, `>` or `|` on Windows'
       )
@@ -127,8 +134,8 @@ export async function rmRF(inputPath: string): Promise<void> {
       recursive: true,
       retryDelay: 300
     })
-  } catch (err) {
-    throw new Error(`File was unable to be removed ${err}`)
+  } catch (error) {
+    throw new Error(`File was unable to be removed ${error}`)
   }
 }
 
@@ -139,7 +146,7 @@ export async function rmRF(inputPath: string): Promise<void> {
  * @param   fsPath        path to create
  * @returns Promise<void>
  */
-export async function mkdirP(fsPath: string): Promise<void> {
+export const mkdirP = async (fsPath: string): Promise<void> => {
   ok(fsPath, 'a path argument must be provided')
   await ioUtil.mkdir(fsPath, {recursive: true})
 }
@@ -152,7 +159,7 @@ export async function mkdirP(fsPath: string): Promise<void> {
  * @param     check             whether to check if tool exists
  * @returns   Promise<string>   path to tool
  */
-export async function which(tool: string, check?: boolean): Promise<string> {
+export const which = async (tool: string, check?: boolean): Promise<string> => {
   if (!tool) {
     throw new Error("parameter 'tool' is required")
   }
@@ -162,15 +169,14 @@ export async function which(tool: string, check?: boolean): Promise<string> {
     const result: string = await which(tool, false)
 
     if (!result) {
-      if (ioUtil.IS_WINDOWS) {
-        throw new Error(
-          `Unable to locate executable file: ${tool}. Please verify either the file path exists or the file can be found within a directory specified by the PATH environment variable. Also verify the file has a valid extension for an executable file.`
-        )
-      } else {
-        throw new Error(
-          `Unable to locate executable file: ${tool}. Please verify either the file path exists or the file can be found within a directory specified by the PATH environment variable. Also check the file mode to verify the file is executable.`
-        )
-      }
+      const error = ioUtil.IS_WINDOWS
+        ? new Error(
+            `Unable to locate executable file: ${tool}. Please verify either the file path exists or the file can be found within a directory specified by the PATH environment variable. Also verify the file has a valid extension for an executable file.`
+          )
+        : new Error(
+            `Unable to locate executable file: ${tool}. Please verify either the file path exists or the file can be found within a directory specified by the PATH environment variable. Also check the file mode to verify the file is executable.`
+          )
+      throw error
     }
 
     return result
@@ -178,7 +184,7 @@ export async function which(tool: string, check?: boolean): Promise<string> {
 
   const matches: string[] = await findInPath(tool)
 
-  if (matches && matches.length > 0) {
+  if (matches && matches.length > 0 && typeof matches[0] === 'string') {
     return matches[0]
   }
 
@@ -190,7 +196,7 @@ export async function which(tool: string, check?: boolean): Promise<string> {
  *
  * @returns   Promise<string[]>  the paths of the tool
  */
-export async function findInPath(tool: string): Promise<string[]> {
+export const findInPath = async (tool: string): Promise<string[]> => {
   if (!tool) {
     throw new Error("parameter 'tool' is required")
   }
@@ -229,8 +235,8 @@ export async function findInPath(tool: string): Promise<string[]> {
   // across platforms.
   const directories: string[] = []
 
-  if (process.env.PATH) {
-    for (const p of process.env.PATH.split(path.delimiter)) {
+  if (process.env['PATH']) {
+    for (const p of process.env['PATH'].split(path.delimiter)) {
       if (p) {
         directories.push(p)
       }
@@ -253,7 +259,7 @@ export async function findInPath(tool: string): Promise<string[]> {
   return matches
 }
 
-function readCopyOptions(options: CopyOptions): Required<CopyOptions> {
+const readCopyOptions = (options: CopyOptions): Required<CopyOptions> => {
   const force = options.force == null ? true : options.force
   const recursive = Boolean(options.recursive)
   const copySourceDirectory =
@@ -263,12 +269,12 @@ function readCopyOptions(options: CopyOptions): Required<CopyOptions> {
   return {force, recursive, copySourceDirectory}
 }
 
-async function cpDirRecursive(
+const cpDirRecursive = async (
   sourceDir: string,
   destDir: string,
   currentDepth: number,
   force: boolean
-): Promise<void> {
+): Promise<void> => {
   // Ensure there is not a run away recursive copy
   if (currentDepth >= 255) return
   currentDepth++
@@ -282,6 +288,7 @@ async function cpDirRecursive(
     const destFile = `${destDir}/${fileName}`
     const srcFileStat = await ioUtil.lstat(srcFile)
 
+    // eslint-disable-next-line unicorn/prefer-ternary
     if (srcFileStat.isDirectory()) {
       // Recurse
       await cpDirRecursive(srcFile, destFile, currentDepth, force)
@@ -295,19 +302,19 @@ async function cpDirRecursive(
 }
 
 // Buffered file copy
-async function copyFile(
+const copyFile = async (
   srcFile: string,
   destFile: string,
   force: boolean
-): Promise<void> {
+): Promise<void> => {
   if ((await ioUtil.lstat(srcFile)).isSymbolicLink()) {
     // unlink/re-link it
     try {
       await ioUtil.lstat(destFile)
       await ioUtil.unlink(destFile)
-    } catch (e) {
+    } catch (error) {
       // Try to override file permission
-      if (e.code === 'EPERM') {
+      if (ioUtil.hasErrorCode(error) && error.code === 'EPERM') {
         await ioUtil.chmod(destFile, '0666')
         await ioUtil.unlink(destFile)
       }

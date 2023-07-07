@@ -1,7 +1,9 @@
-import * as fs from 'fs'
-import * as path from 'path'
+import fs from 'node:fs'
+import {lstat, readdir, stat} from 'node:fs/promises'
+import path from 'node:path'
+import process from 'node:process'
 
-export const {
+export {
   chmod,
   copyFile,
   lstat,
@@ -15,31 +17,39 @@ export const {
   stat,
   symlink,
   unlink
-} = fs.promises
-// export const {open} = 'fs'
+} from 'node:fs/promises'
+
 export const IS_WINDOWS = process.platform === 'win32'
 // See https://github.com/nodejs/node/blob/d0153aee367422d0858105abec186da4dff0a0c5/deps/uv/include/uv/win.h#L691
+// eslint-disable-next-line unicorn/numeric-separators-style
 export const UV_FS_O_EXLOCK = 0x10000000
 export const READONLY = fs.constants.O_RDONLY
 
-export async function exists(fsPath: string): Promise<boolean> {
+type OurError = Error & {code: string}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const hasErrorCode = (err: any): err is OurError => {
+  return err && typeof err === 'object' && 'code' in err
+}
+
+export const exists = async (fsPath: string): Promise<boolean> => {
   try {
     await stat(fsPath)
-  } catch (err) {
-    if (err.code === 'ENOENT') {
+  } catch (error) {
+    if (hasErrorCode(error) && error.code === 'ENOENT') {
       return false
     }
 
-    throw err
+    throw error
   }
 
   return true
 }
 
-export async function isDirectory(
+export const isDirectory = async (
   fsPath: string,
   useStat = false
-): Promise<boolean> {
+): Promise<boolean> => {
   const stats = useStat ? await stat(fsPath) : await lstat(fsPath)
   return stats.isDirectory()
 }
@@ -48,7 +58,7 @@ export async function isDirectory(
  * On OSX/Linux, true if path starts with '/'. On Windows, true for paths like:
  * \, \hello, \\hello\share, C:, and C:\hello (and corresponding alternate separator cases).
  */
-export function isRooted(p: string): boolean {
+export const isRooted = (p: string): boolean => {
   p = normalizeSeparators(p)
   if (!p) {
     throw new Error('isRooted() parameter "p" cannot be empty')
@@ -56,7 +66,7 @@ export function isRooted(p: string): boolean {
 
   if (IS_WINDOWS) {
     return (
-      p.startsWith('\\') || /^[A-Z]:/i.test(p) // e.g. \ or \hello or \\hello
+      p.startsWith('\\') || /^[a-z]:/i.test(p) // e.g. \ or \hello or \\hello
     ) // e.g. C: or C:\hello
   }
 
@@ -69,19 +79,19 @@ export function isRooted(p: string): boolean {
  * @param extensions  additional file extensions to try
  * @return if file exists and is executable, returns the file path. otherwise empty string.
  */
-export async function tryGetExecutablePath(
+export const tryGetExecutablePath = async (
   filePath: string,
   extensions: string[]
-): Promise<string> {
-  let stats: fs.Stats | undefined = undefined
+): Promise<string> => {
+  let stats: fs.Stats | undefined
   try {
     // test file exists
     stats = await stat(filePath)
-  } catch (err) {
-    if (err.code !== 'ENOENT') {
+  } catch (error) {
+    if (hasErrorCode(error) && error.code !== 'ENOENT') {
       // eslint-disable-next-line no-console
       console.log(
-        `Unexpected error attempting to determine if executable file exists '${filePath}': ${err}`
+        `Unexpected error attempting to determine if executable file exists '${filePath}': ${error}`
       )
     }
   }
@@ -107,11 +117,11 @@ export async function tryGetExecutablePath(
     stats = undefined
     try {
       stats = await stat(filePath)
-    } catch (err) {
-      if (err.code !== 'ENOENT') {
+    } catch (error) {
+      if (hasErrorCode(error) && error.code !== 'ENOENT') {
         // eslint-disable-next-line no-console
         console.log(
-          `Unexpected error attempting to determine if executable file exists '${filePath}': ${err}`
+          `Unexpected error attempting to determine if executable file exists '${filePath}': ${error}`
         )
       }
     }
@@ -128,10 +138,10 @@ export async function tryGetExecutablePath(
               break
             }
           }
-        } catch (err) {
+        } catch (error) {
           // eslint-disable-next-line no-console
           console.log(
-            `Unexpected error attempting to determine the actual case of the file '${filePath}': ${err}`
+            `Unexpected error attempting to determine the actual case of the file '${filePath}': ${error}`
           )
         }
 
@@ -147,32 +157,32 @@ export async function tryGetExecutablePath(
   return ''
 }
 
-function normalizeSeparators(p: string): string {
-  p = p || ''
+function normalizeSeparators(p = ''): string {
   if (IS_WINDOWS) {
     // convert slashes on Windows
-    p = p.replace(/\//g, '\\')
+    p = p.replaceAll('/', '\\')
 
     // remove redundant slashes
-    return p.replace(/\\\\+/g, '\\')
+    return p.replaceAll(/\\\\+/g, '\\')
   }
 
   // remove redundant slashes
-  return p.replace(/\/\/+/g, '/')
+  return p.replaceAll(/\/\/+/g, '/')
 }
 
 // on Mac/Linux, test the execute bit
 //     R   W  X  R  W X R W X
 //   256 128 64 32 16 8 4 2 1
 function isUnixExecutable(stats: fs.Stats): boolean {
+  const gid = process.getgid && process.getgid()
   return (
     (stats.mode & 1) > 0 ||
-    ((stats.mode & 8) > 0 && stats.gid === process.getgid()) ||
-    ((stats.mode & 64) > 0 && stats.uid === process.getuid())
+    ((stats.mode & 8) > 0 && stats.gid === gid) ||
+    ((stats.mode & 64) > 0 && stats.uid === gid)
   )
 }
 
 // Get the path of cmd.exe in windows
-export function getCmdPath(): string {
+export const getCmdPath = (): string => {
   return process.env['COMSPEC'] ?? `cmd.exe`
 }

@@ -1,16 +1,28 @@
-import * as child from 'child_process'
-import {promises as fs} from 'fs'
-import * as os from 'os'
-import * as path from 'path'
-import * as io from '../src/io'
-import * as ioUtil from '../src/io-util'
+/* eslint-disable unicorn/prefer-ternary */
+/* eslint-disable vitest/no-conditional-expect */
+/* eslint-disable vitest/no-conditional-in-test */
+/* eslint-disable vitest/no-conditional-tests */
+/* eslint-disable unicorn/no-await-expression-member */
+
+import child from 'node:child_process'
+import {promises as fs} from 'node:fs'
+import os from 'node:os'
+import path from 'node:path'
+import url from 'node:url'
+
+import {beforeAll, describe, expect, test} from 'vitest'
+
+import * as ioUtil from '../src/io-util.js'
+import * as io from '../src/io.js'
+
+const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
 
 describe('cp', () => {
   beforeAll(async () => {
     await io.rmRF(getTestTemp())
   })
 
-  it('copies file with no flags', async () => {
+  test('copies file with no flags', async () => {
     const root = path.join(getTestTemp(), 'cp_with_no_flags')
     const sourceFile = path.join(root, 'cp_source')
     const targetFile = path.join(root, 'cp_target')
@@ -19,12 +31,12 @@ describe('cp', () => {
 
     await io.cp(sourceFile, targetFile)
 
-    expect(await fs.readFile(targetFile, {encoding: 'utf8'})).toBe(
+    await expect(fs.readFile(targetFile, {encoding: 'utf8'})).resolves.toBe(
       'test file content'
     )
   })
 
-  it('copies file using -f', async () => {
+  test('copies file using -f', async () => {
     const root: string = path.join(path.join(__dirname, '_temp'), 'cp_with_-f')
     const sourceFile: string = path.join(root, 'cp_source')
     const targetFile: string = path.join(root, 'cp_target')
@@ -33,12 +45,12 @@ describe('cp', () => {
 
     await io.cp(sourceFile, targetFile, {recursive: false, force: true})
 
-    expect(await fs.readFile(targetFile, {encoding: 'utf8'})).toBe(
+    await expect(fs.readFile(targetFile, {encoding: 'utf8'})).resolves.toBe(
       'test file content'
     )
   })
 
-  it('copies file into directory', async () => {
+  test('copies file into directory', async () => {
     const root: string = path.join(
       path.join(__dirname, '_temp'),
       'cp_file_to_directory'
@@ -51,12 +63,12 @@ describe('cp', () => {
 
     await io.cp(sourceFile, targetDirectory, {recursive: false, force: true})
 
-    expect(await fs.readFile(targetFile, {encoding: 'utf8'})).toBe(
+    await expect(fs.readFile(targetFile, {encoding: 'utf8'})).resolves.toBe(
       'test file content'
     )
   })
 
-  it('try copying to existing file with -n', async () => {
+  test('try copying to existing file with -n', async () => {
     const root: string = path.join(getTestTemp(), 'cp_to_existing')
     const sourceFile: string = path.join(root, 'cp_source')
     const targetFile: string = path.join(root, 'cp_target')
@@ -65,12 +77,12 @@ describe('cp', () => {
     await fs.writeFile(targetFile, 'correct content', {encoding: 'utf8'})
     await io.cp(sourceFile, targetFile, {recursive: false, force: false})
 
-    expect(await fs.readFile(targetFile, {encoding: 'utf8'})).toBe(
+    await expect(fs.readFile(targetFile, {encoding: 'utf8'})).resolves.toBe(
       'correct content'
     )
   })
 
-  it('copies directory into existing destination with -r', async () => {
+  test('copies directory into existing destination with -r', async () => {
     const root: string = path.join(getTestTemp(), 'cp_with_-r_existing_dest')
     const sourceFolder: string = path.join(root, 'cp_source')
     const sourceFile: string = path.join(sourceFolder, 'cp_source_file')
@@ -86,12 +98,12 @@ describe('cp', () => {
     await io.mkdirP(targetFolder)
     await io.cp(sourceFolder, targetFolder, {recursive: true})
 
-    expect(await fs.readFile(targetFile, {encoding: 'utf8'})).toBe(
+    await expect(fs.readFile(targetFile, {encoding: 'utf8'})).resolves.toBe(
       'test file content'
     )
   })
 
-  it('copies directory into existing destination with -r without copying source directory', async () => {
+  test('copies directory into existing destination with -r without copying source directory', async () => {
     const root: string = path.join(
       getTestTemp(),
       'cp_with_-r_existing_dest_no_source_dir'
@@ -109,12 +121,12 @@ describe('cp', () => {
       copySourceDirectory: false
     })
 
-    expect(await fs.readFile(targetFile, {encoding: 'utf8'})).toBe(
+    await expect(fs.readFile(targetFile, {encoding: 'utf8'})).resolves.toBe(
       'test file content'
     )
   })
 
-  it('copies directory into non-existing destination with -r', async () => {
+  test('copies directory into non-existing destination with -r', async () => {
     const root: string = path.join(getTestTemp(), 'cp_with_-r_nonexistent_dest')
     const sourceFolder: string = path.join(root, 'cp_source')
     const sourceFile: string = path.join(sourceFolder, 'cp_source_file')
@@ -125,12 +137,12 @@ describe('cp', () => {
     await fs.writeFile(sourceFile, 'test file content', {encoding: 'utf8'})
     await io.cp(sourceFolder, targetFolder, {recursive: true})
 
-    expect(await fs.readFile(targetFile, {encoding: 'utf8'})).toBe(
+    await expect(fs.readFile(targetFile, {encoding: 'utf8'})).resolves.toBe(
       'test file content'
     )
   })
 
-  it('tries to copy directory without -r', async () => {
+  test('tries to copy directory without -r', async () => {
     const root: string = path.join(getTestTemp(), 'cp_without_-r')
     const sourceFolder: string = path.join(root, 'cp_source')
     const sourceFile: string = path.join(sourceFolder, 'cp_source_file')
@@ -144,17 +156,13 @@ describe('cp', () => {
     await io.mkdirP(sourceFolder)
     await fs.writeFile(sourceFile, 'test file content', {encoding: 'utf8'})
 
-    let thrown = false
-    try {
-      await io.cp(sourceFolder, targetFolder)
-    } catch (err) {
-      thrown = true
-    }
-    expect(thrown).toBe(true)
+    await expect(io.cp(sourceFolder, targetFolder)).rejects.toThrow(
+      'Failed to copy'
+    )
     await assertNotExists(targetFile)
   })
 
-  it('Copies symlinks correctly', async () => {
+  test('copies symlinks correctly', async () => {
     // create the following layout
     // sourceFolder
     // sourceFolder/nested
@@ -183,12 +191,12 @@ describe('cp', () => {
     await createSymlinkDir(nestedFolder, symlinkDirectory)
     await io.cp(sourceFolder, targetFolder, {recursive: true})
 
-    expect(await fs.readFile(targetFile, {encoding: 'utf8'})).toBe(
+    await expect(fs.readFile(targetFile, {encoding: 'utf8'})).resolves.toBe(
       'test file content'
     )
-    expect(await fs.readFile(symlinkTargetPath, {encoding: 'utf8'})).toBe(
-      'test file content'
-    )
+    await expect(
+      fs.readFile(symlinkTargetPath, {encoding: 'utf8'})
+    ).resolves.toBe('test file content')
   })
 })
 
@@ -197,7 +205,7 @@ describe('mv', () => {
     await io.rmRF(getTestTemp())
   })
 
-  it('moves file with no flags', async () => {
+  test('moves file with no flags', async () => {
     const root = path.join(getTestTemp(), ' mv_with_no_flags')
     const sourceFile = path.join(root, ' mv_source')
     const targetFile = path.join(root, ' mv_target')
@@ -206,13 +214,13 @@ describe('mv', () => {
 
     await io.mv(sourceFile, targetFile)
 
-    expect(await fs.readFile(targetFile, {encoding: 'utf8'})).toBe(
+    await expect(fs.readFile(targetFile, {encoding: 'utf8'})).resolves.toBe(
       'test file content'
     )
     await assertNotExists(sourceFile)
   })
 
-  it('moves file using -f', async () => {
+  test('moves file using -f', async () => {
     const root: string = path.join(path.join(__dirname, '_temp'), ' mv_with_-f')
     const sourceFile: string = path.join(root, ' mv_source')
     const targetFile: string = path.join(root, ' mv_target')
@@ -221,14 +229,14 @@ describe('mv', () => {
 
     await io.mv(sourceFile, targetFile)
 
-    expect(await fs.readFile(targetFile, {encoding: 'utf8'})).toBe(
+    await expect(fs.readFile(targetFile, {encoding: 'utf8'})).resolves.toBe(
       'test file content'
     )
 
     await assertNotExists(sourceFile)
   })
 
-  it('try moving to existing file with -n', async () => {
+  test('try moving to existing file with -n', async () => {
     const root: string = path.join(getTestTemp(), ' mv_to_existing')
     const sourceFile: string = path.join(root, ' mv_source')
     const targetFile: string = path.join(root, ' mv_target')
@@ -243,15 +251,15 @@ describe('mv', () => {
     }
     expect(failed).toBe(true)
 
-    expect(await fs.readFile(sourceFile, {encoding: 'utf8'})).toBe(
+    await expect(fs.readFile(sourceFile, {encoding: 'utf8'})).resolves.toBe(
       'test file content'
     )
-    expect(await fs.readFile(targetFile, {encoding: 'utf8'})).toBe(
+    await expect(fs.readFile(targetFile, {encoding: 'utf8'})).resolves.toBe(
       'correct content'
     )
   })
 
-  it('moves directory into existing destination', async () => {
+  test('moves directory into existing destination', async () => {
     const root: string = path.join(getTestTemp(), ' mv_with_-r_existing_dest')
     const sourceFolder: string = path.join(root, ' mv_source')
     const sourceFile: string = path.join(sourceFolder, ' mv_source_file')
@@ -267,13 +275,13 @@ describe('mv', () => {
     await io.mkdirP(targetFolder)
     await io.mv(sourceFolder, targetFolder)
 
-    expect(await fs.readFile(targetFile, {encoding: 'utf8'})).toBe(
+    await expect(fs.readFile(targetFile, {encoding: 'utf8'})).resolves.toBe(
       'test file content'
     )
     await assertNotExists(sourceFile)
   })
 
-  it('moves directory into non-existing destination', async () => {
+  test('moves directory into non-existing destination', async () => {
     const root: string = path.join(
       getTestTemp(),
       ' mv_with_-r_nonexistent_dest'
@@ -287,7 +295,7 @@ describe('mv', () => {
     await fs.writeFile(sourceFile, 'test file content', {encoding: 'utf8'})
     await io.mv(sourceFolder, targetFolder)
 
-    expect(await fs.readFile(targetFile, {encoding: 'utf8'})).toBe(
+    await expect(fs.readFile(targetFile, {encoding: 'utf8'})).resolves.toBe(
       'test file content'
     )
     await assertNotExists(sourceFile)
@@ -299,7 +307,7 @@ describe('rmRF', () => {
     await io.rmRF(getTestTemp())
   })
 
-  it('removes single folder with rmRF', async () => {
+  test('removes single folder with rmRF', async () => {
     const testPath = path.join(getTestTemp(), 'testFolder')
 
     await io.mkdirP(testPath)
@@ -309,7 +317,7 @@ describe('rmRF', () => {
     await assertNotExists(testPath)
   })
 
-  it('removes recursive folders with rmRF', async () => {
+  test('removes recursive folders with rmRF', async () => {
     const testPath = path.join(getTestTemp(), 'testDir1')
     const testPath2 = path.join(testPath, 'testDir2')
     await io.mkdirP(testPath2)
@@ -322,7 +330,7 @@ describe('rmRF', () => {
     await assertNotExists(testPath2)
   })
 
-  it('removes folder with locked file with rmRF', async () => {
+  test('removes folder with locked file with rmRF', async () => {
     const testPath = path.join(getTestTemp(), 'testFolder')
     await io.mkdirP(testPath)
     await assertExists(testPath)
@@ -339,10 +347,12 @@ describe('rmRF', () => {
       filePath,
       fs.constants.O_RDONLY | ioUtil.UV_FS_O_EXLOCK
     )
+    // eslint-disable-next-line vitest/no-conditional-tests, vitest/no-conditional-in-test
     if (ioUtil.IS_WINDOWS) {
       // On Windows, we expect an error due to an lstat call implementation in the underlying libuv code.
       // See https://github.com/libuv/libuv/issues/3267 is resolved
-      await expect(async () => io.rmRF(testPath)).rejects.toThrow('EBUSY')
+      // eslint-disable-next-line vitest/no-conditional-expect
+      await expect(io.rmRF(testPath)).rejects.toThrow('EBUSY')
     } else {
       await io.rmRF(testPath)
 
@@ -353,7 +363,7 @@ describe('rmRF', () => {
     await assertNotExists(testPath)
   })
 
-  it('removes folder that does not exist with rmRF', async () => {
+  test('removes folder that does not exist with rmRF', async () => {
     const testPath = path.join(getTestTemp(), 'testFolder')
     await assertNotExists(testPath)
 
@@ -361,7 +371,7 @@ describe('rmRF', () => {
     await assertNotExists(testPath)
   })
 
-  it('removes file with rmRF', async () => {
+  test('removes file with rmRF', async () => {
     const file: string = path.join(getTestTemp(), 'rmRF_file')
     await fs.writeFile(file, 'test file content')
     await assertExists(file)
@@ -369,7 +379,7 @@ describe('rmRF', () => {
     await assertNotExists(file)
   })
 
-  it('removes hidden folder with rmRF', async () => {
+  test('removes hidden folder with rmRF', async () => {
     const directory: string = path.join(getTestTemp(), '.rmRF_directory')
     await createHiddenDirectory(directory)
     await assertExists(directory)
@@ -377,7 +387,7 @@ describe('rmRF', () => {
     await assertNotExists(directory)
   })
 
-  it('removes hidden file with rmRF', async () => {
+  test('removes hidden file with rmRF', async () => {
     const file: string = path.join(getTestTemp(), '.rmRF_file')
     await fs.writeFile(file, 'test file content')
     await assertExists(file)
@@ -386,8 +396,9 @@ describe('rmRF', () => {
   })
 
   // creating a symlink to a file on Windows requires elevated
-  if (os.platform() !== 'win32') {
-    it('removes symlink file with rmRF', async () => {
+  // eslint-disable-next-line vitest/require-hook
+  describe.skipIf(os.platform() === 'win32')('symlink', () => {
+    test('removes symlink file with rmRF', async () => {
       // create the following layout:
       //   real_file
       //   symlink_file -> real_file
@@ -397,7 +408,7 @@ describe('rmRF', () => {
       await io.mkdirP(root)
       await fs.writeFile(realFile, 'test file content')
       await fs.symlink(realFile, symlinkFile)
-      expect(await fs.readFile(symlinkFile, {encoding: 'utf8'})).toBe(
+      await expect(fs.readFile(symlinkFile, {encoding: 'utf8'})).resolves.toBe(
         'test file content'
       )
 
@@ -406,7 +417,7 @@ describe('rmRF', () => {
       await assertNotExists(symlinkFile)
     })
 
-    it('removes symlink file with missing source using rmRF', async () => {
+    test('removes symlink file with missing source using rmRF', async () => {
       // create the following layout:
       //   real_file
       //   symlink_file -> real_file
@@ -419,27 +430,22 @@ describe('rmRF', () => {
       await io.mkdirP(root)
       await fs.writeFile(realFile, 'test file content')
       await fs.symlink(realFile, symlinkFile)
-      expect(await fs.readFile(symlinkFile, {encoding: 'utf8'})).toBe(
+      await expect(fs.readFile(symlinkFile, {encoding: 'utf8'})).resolves.toBe(
         'test file content'
       )
 
       // remove the real file
       await fs.unlink(realFile)
+      // eslint-disable-next-line unicorn/no-await-expression-member
       expect((await fs.lstat(symlinkFile)).isSymbolicLink()).toBe(true)
 
       // remove the symlink file
       await io.rmRF(symlinkFile)
-      let errcode = ''
-      try {
-        await fs.lstat(symlinkFile)
-      } catch (err) {
-        errcode = err.code
-      }
 
-      expect(errcode).toBe('ENOENT')
+      await expect(fs.lstat(symlinkFile)).rejects.toThrow('ENOENT')
     })
 
-    it('removes symlink level 2 file with rmRF', async () => {
+    test('removes symlink level 2 file with rmRF', async () => {
       // create the following layout:
       //   real_file
       //   symlink_file -> real_file
@@ -455,9 +461,9 @@ describe('rmRF', () => {
       await fs.writeFile(realFile, 'test file content')
       await fs.symlink(realFile, symlinkFile)
       await fs.symlink(symlinkFile, symlinkLevel2File)
-      expect(await fs.readFile(symlinkLevel2File, {encoding: 'utf8'})).toBe(
-        'test file content'
-      )
+      await expect(
+        fs.readFile(symlinkLevel2File, {encoding: 'utf8'})
+      ).resolves.toBe('test file content')
 
       await io.rmRF(symlinkLevel2File)
       await assertExists(realFile)
@@ -465,7 +471,7 @@ describe('rmRF', () => {
       await assertNotExists(symlinkLevel2File)
     })
 
-    it('removes nested symlink file with rmRF', async () => {
+    test('removes nested symlink file with rmRF', async () => {
       // create the following layout:
       //   real_directory
       //   real_directory/real_file
@@ -484,7 +490,7 @@ describe('rmRF', () => {
       await fs.writeFile(realFile, 'test file content')
       await io.mkdirP(outerDirectory)
       await fs.symlink(realFile, symlinkFile)
-      expect(await fs.readFile(symlinkFile, {encoding: 'utf8'})).toBe(
+      await expect(fs.readFile(symlinkFile, {encoding: 'utf8'})).resolves.toBe(
         'test file content'
       )
 
@@ -495,7 +501,7 @@ describe('rmRF', () => {
       await assertNotExists(outerDirectory)
     })
 
-    it('removes deeply nested symlink file with rmRF', async () => {
+    test('removes deeply nested symlink file with rmRF', async () => {
       // create the following layout:
       //   real_directory
       //   real_directory/real_file
@@ -524,7 +530,7 @@ describe('rmRF', () => {
       await fs.writeFile(realFile, 'test file content')
       await io.mkdirP(nestedDirectory)
       await fs.symlink(realFile, symlinkFile)
-      expect(await fs.readFile(symlinkFile, {encoding: 'utf8'})).toBe(
+      await expect(fs.readFile(symlinkFile, {encoding: 'utf8'})).resolves.toBe(
         'test file content'
       )
 
@@ -534,8 +540,11 @@ describe('rmRF', () => {
       await assertNotExists(symlinkFile)
       await assertNotExists(outerDirectory)
     })
-  } else {
-    it('correctly escapes % on windows', async () => {
+  })
+
+  // eslint-disable-next-line vitest/require-hook
+  describe.skipIf(os.platform() !== 'win32')('symlink', () => {
+    test('correctly escapes % on windows', async () => {
       const root: string = path.join(getTestTemp(), 'rmRF_escape_test_win')
       const directory: string = path.join(root, '%test%')
       await io.mkdirP(root)
@@ -548,7 +557,7 @@ describe('rmRF', () => {
       process.env['test'] = oldEnv
     })
 
-    it('Should throw for invalid characters', async () => {
+    test('should throw for invalid characters', async () => {
       const root: string = path.join(getTestTemp(), 'rmRF_invalidChar_Windows')
       const errorString =
         'File path must not contain `*`, `"`, `<`, `>` or `|` on Windows'
@@ -573,9 +582,10 @@ describe('rmRF', () => {
         errorString
       )
     })
-  }
+  })
 
-  it('removes symlink folder with missing source using rmRF', async () => {
+  test('removes symlink folder with missing source using rmRF', async () => {
+    expect.assertions(3)
     // create the following layout:
     //   real_directory
     //   real_directory/real_file
@@ -592,31 +602,18 @@ describe('rmRF', () => {
     // remove the real directory
     await fs.unlink(realFile)
     await fs.rmdir(realDirectory)
-    let errcode = ''
-    try {
-      await fs.stat(symlinkDirectory)
-    } catch (err) {
-      errcode = err.code
-    }
 
-    expect(errcode).toBe('ENOENT')
+    await expect(fs.stat(symlinkDirectory)).rejects.toThrow('ENOENT')
 
     // lstat shouldn't throw
     await fs.lstat(symlinkDirectory)
 
     // remove the symlink directory
     await io.rmRF(symlinkDirectory)
-    errcode = ''
-    try {
-      await fs.lstat(symlinkDirectory)
-    } catch (err) {
-      errcode = err.code
-    }
-
-    expect(errcode).toBe('ENOENT')
+    await expect(fs.lstat(symlinkDirectory)).rejects.toThrow('ENOENT')
   })
 
-  it('removes symlink level 2 folder with rmRF', async () => {
+  test('removes symlink level 2 folder with rmRF', async () => {
     // create the following layout:
     //   real_directory
     //   real_directory/real_file
@@ -637,17 +634,19 @@ describe('rmRF', () => {
     await fs.writeFile(realFile, 'test file content')
     await createSymlinkDir(realDirectory, symlinkDirectory)
     await createSymlinkDir(symlinkDirectory, symlinkLevel2Directory)
-    expect(
-      await fs.readFile(path.join(symlinkDirectory, 'real_file'), {
+    await expect(
+      fs.readFile(path.join(symlinkDirectory, 'real_file'), {
         encoding: 'utf8'
       })
-    ).toBe('test file content')
+    ).resolves.toBe('test file content')
     if (os.platform() === 'win32') {
-      expect(await fs.readlink(symlinkLevel2Directory)).toBe(
+      await expect(fs.readlink(symlinkLevel2Directory)).resolves.toBe(
         `${symlinkDirectory}\\`
       )
     } else {
-      expect(await fs.readlink(symlinkLevel2Directory)).toBe(symlinkDirectory)
+      await expect(fs.readlink(symlinkLevel2Directory)).resolves.toBe(
+        symlinkDirectory
+      )
     }
 
     await io.rmRF(symlinkLevel2Directory)
@@ -655,7 +654,7 @@ describe('rmRF', () => {
     await assertNotExists(symlinkLevel2Directory)
   })
 
-  it('removes nested symlink folder with rmRF', async () => {
+  test('removes nested symlink folder with rmRF', async () => {
     // create the following layout:
     //   real_directory
     //   real_directory/real_file
@@ -683,7 +682,7 @@ describe('rmRF', () => {
     await assertNotExists(outerDirectory)
   })
 
-  it('removes deeply nested symlink folder with rmRF', async () => {
+  test('removes deeply nested symlink folder with rmRF', async () => {
     // create the following layout:
     //   real_directory
     //   real_directory/real_file
@@ -718,7 +717,7 @@ describe('rmRF', () => {
     await assertNotExists(outerDirectory)
   })
 
-  it('removes hidden file with rmRF', async () => {
+  test('removes hidden file with rmRF', async () => {
     const file: string = path.join(getTestTemp(), '.rmRF_file')
     await io.mkdirP(path.dirname(file))
     await createHiddenFile(file, 'test file content')
@@ -733,62 +732,52 @@ describe('mkdirP', () => {
     await io.rmRF(getTestTemp())
   })
 
-  it('fails when called with an empty path', async () => {
+  test('fails when called with an empty path', async () => {
     expect.assertions(1)
 
-    try {
-      await io.mkdirP('')
-    } catch (err) {
-      expect(err.message).toEqual('a path argument must be provided')
-    }
+    await expect(io.mkdirP('')).rejects.toThrow(
+      'a path argument must be provided'
+    )
   })
 
-  it('creates folder', async () => {
+  test('creates folder', async () => {
     const testPath = path.join(getTestTemp(), 'mkdirTest')
     await io.mkdirP(testPath)
 
     await assertExists(testPath)
   })
 
-  it('creates nested folders with mkdirP', async () => {
+  test('creates nested folders with mkdirP', async () => {
     const testPath = path.join(getTestTemp(), 'mkdir1', 'mkdir2')
     await io.mkdirP(testPath)
 
     await assertExists(testPath)
   })
 
-  it('fails if mkdirP with illegal chars', async () => {
-    const testPath = path.join(getTestTemp(), 'mkdir\0')
-    let worked = false
-    try {
-      await io.mkdirP(testPath)
-      worked = true
-    } catch (err) {
-      await expect(fs.stat(testPath)).rejects.toHaveProperty(
-        'code',
-        'ERR_INVALID_ARG_VALUE'
-      )
-    }
+  test('fails if mkdirP with illegal chars', async () => {
+    expect.assertions(1)
 
-    expect(worked).toBe(false)
+    const testPath = path.join(getTestTemp(), 'mkdir\0')
+
+    await expect(fs.stat(testPath)).rejects.toHaveProperty(
+      'code',
+      'ERR_INVALID_ARG_VALUE'
+    )
   })
 
-  it('fails if mkdirP with conflicting file path', async () => {
+  test('fails if mkdirP with conflicting file path', async () => {
+    expect.assertions(1)
+
     const testPath = path.join(getTestTemp(), 'mkdirP_conflicting_file_path')
     await io.mkdirP(getTestTemp())
     await fs.writeFile(testPath, '')
-    let worked: boolean
-    try {
-      await io.mkdirP(testPath)
-      worked = true
-    } catch (err) {
-      worked = false
-    }
 
-    expect(worked).toBe(false)
+    await expect(io.mkdirP(testPath)).rejects.toThrow('EEXIST:')
   })
 
-  it('fails if mkdirP with conflicting parent file path', async () => {
+  test('fails if mkdirP with conflicting parent file path', async () => {
+    expect.assertions(1)
+
     const testPath = path.join(
       getTestTemp(),
       'mkdirP_conflicting_parent_file_path',
@@ -796,18 +785,10 @@ describe('mkdirP', () => {
     )
     await io.mkdirP(getTestTemp())
     await fs.writeFile(path.dirname(testPath), '')
-    let worked: boolean
-    try {
-      await io.mkdirP(testPath)
-      worked = true
-    } catch (err) {
-      worked = false
-    }
-
-    expect(worked).toBe(false)
+    await expect(io.mkdirP(testPath)).rejects.toThrow('ENOTDIR:')
   })
 
-  it('no-ops if mkdirP directory exists', async () => {
+  test('no-ops if mkdirP directory exists', async () => {
     const testPath = path.join(getTestTemp(), 'mkdirP_dir_exists')
     await io.mkdirP(testPath)
     await assertExists(testPath)
@@ -817,7 +798,7 @@ describe('mkdirP', () => {
     await assertExists(testPath)
   })
 
-  it('no-ops if mkdirP with symlink directory', async () => {
+  test('no-ops if mkdirP with symlink directory', async () => {
     // create the following layout:
     //   real_dir
     //   real_dir/file.txt
@@ -841,7 +822,7 @@ describe('mkdirP', () => {
     ).toBe(true)
   })
 
-  it('no-ops if mkdirP with parent symlink directory', async () => {
+  test('no-ops if mkdirP with parent symlink directory', async () => {
     // create the following layout:
     //   real_dir
     //   real_dir/file.txt
@@ -871,7 +852,7 @@ describe('which', () => {
     await io.rmRF(getTestTemp())
   })
 
-  it('which() finds file name', async () => {
+  test('which() finds file name', async () => {
     // create a executable file
     const testPath = path.join(getTestTemp(), 'which-finds-file-name')
     await io.mkdirP(testPath)
@@ -892,58 +873,58 @@ describe('which', () => {
       process.env['PATH'] = `${process.env['PATH']}${path.delimiter}${testPath}`
 
       // exact file name
-      expect(await io.which(fileName)).toBe(filePath)
-      expect(await io.which(fileName, false)).toBe(filePath)
-      expect(await io.which(fileName, true)).toBe(filePath)
+      await expect(io.which(fileName)).resolves.toBe(filePath)
+      await expect(io.which(fileName, false)).resolves.toBe(filePath)
+      await expect(io.which(fileName, true)).resolves.toBe(filePath)
 
       if (process.platform === 'win32') {
         // not case sensitive on windows
-        expect(await io.which('which-test-file.exe')).toBe(
+        await expect(io.which('which-test-file.exe')).resolves.toBe(
           path.join(testPath, 'which-test-file.exe')
         )
-        expect(await io.which('WHICH-TEST-FILE.EXE')).toBe(
+        await expect(io.which('WHICH-TEST-FILE.EXE')).resolves.toBe(
           path.join(testPath, 'WHICH-TEST-FILE.EXE')
         )
-        expect(await io.which('WHICH-TEST-FILE.EXE', false)).toBe(
+        await expect(io.which('WHICH-TEST-FILE.EXE', false)).resolves.toBe(
           path.join(testPath, 'WHICH-TEST-FILE.EXE')
         )
-        expect(await io.which('WHICH-TEST-FILE.EXE', true)).toBe(
+        await expect(io.which('WHICH-TEST-FILE.EXE', true)).resolves.toBe(
           path.join(testPath, 'WHICH-TEST-FILE.EXE')
         )
 
         // without extension
-        expect(await io.which('which-test-file')).toBe(filePath)
-        expect(await io.which('which-test-file', false)).toBe(filePath)
-        expect(await io.which('which-test-file', true)).toBe(filePath)
+        await expect(io.which('which-test-file')).resolves.toBe(filePath)
+        await expect(io.which('which-test-file', false)).resolves.toBe(filePath)
+        await expect(io.which('which-test-file', true)).resolves.toBe(filePath)
       } else if (process.platform === 'darwin') {
         // not case sensitive on Mac
-        expect(await io.which(fileName.toUpperCase())).toBe(
+        await expect(io.which(fileName.toUpperCase())).resolves.toBe(
           path.join(testPath, fileName.toUpperCase())
         )
-        expect(await io.which(fileName.toUpperCase(), false)).toBe(
+        await expect(io.which(fileName.toUpperCase(), false)).resolves.toBe(
           path.join(testPath, fileName.toUpperCase())
         )
-        expect(await io.which(fileName.toUpperCase(), true)).toBe(
+        await expect(io.which(fileName.toUpperCase(), true)).resolves.toBe(
           path.join(testPath, fileName.toUpperCase())
         )
       } else {
         // case sensitive on Linux
-        expect(await io.which(fileName.toUpperCase())).toBe('')
+        await expect(io.which(fileName.toUpperCase())).resolves.toBe('')
       }
     } finally {
       process.env['PATH'] = originalPath
     }
   })
 
-  it('which() not found', async () => {
-    expect(await io.which('which-test-no-such-file')).toBe('')
-    expect(await io.which('which-test-no-such-file', false)).toBe('')
+  test('which() not found', async () => {
+    await expect(io.which('which-test-no-such-file')).resolves.toBe('')
+    await expect(io.which('which-test-no-such-file', false)).resolves.toBe('')
     await expect(
       io.which('which-test-no-such-file', true)
     ).rejects.toBeDefined()
   })
 
-  it('which() searches path in order', async () => {
+  test('which() searches path in order', async () => {
     // create a chcp.com/bash override file
     const testPath = path.join(getTestTemp(), 'which-searches-path-in-order')
     await io.mkdirP(testPath)
@@ -967,16 +948,16 @@ describe('which', () => {
       expect(!!(originalWhich || '')).toBe(true)
 
       // modify PATH
-      process.env['PATH'] = [testPath, process.env.PATH].join(path.delimiter)
+      process.env['PATH'] = [testPath, process.env['PATH']].join(path.delimiter)
 
       // override chcp.com/bash should be found
-      expect(await io.which(fileName)).toBe(filePath)
+      await expect(io.which(fileName)).resolves.toBe(filePath)
     } finally {
       process.env['PATH'] = originalPath
     }
   })
 
-  it('which() requires executable', async () => {
+  test('which() requires executable', async () => {
     // create a non-executable file
     // on Windows, should not end in valid PATHEXT
     // on Mac/Linux should not have executable bit
@@ -999,20 +980,20 @@ describe('which', () => {
       process.env['PATH'] = [process.env['PATH'], testPath].join(path.delimiter)
 
       // should not be found
-      expect(await io.which(fileName)).toBe('')
+      await expect(io.which(fileName)).resolves.toBe('')
     } finally {
       process.env['PATH'] = originalPath
     }
   })
 
   // which permissions tests
-  it('which() finds executable with different permissions', async () => {
+  test('which() finds executable with different permissions', async () => {
     await findsExecutableWithScopedPermissions('u=rwx,g=r,o=r')
     await findsExecutableWithScopedPermissions('u=rw,g=rx,o=r')
     await findsExecutableWithScopedPermissions('u=rw,g=r,o=rx')
   })
 
-  it('which() ignores directory match', async () => {
+  test('which() ignores directory match', async () => {
     // create a directory
     const testPath = path.join(getTestTemp(), 'which-ignores-directory-match')
     let dirPath = path.join(testPath, 'Which-Test-Dir')
@@ -1031,13 +1012,13 @@ describe('which', () => {
       process.env['PATH'] = [process.env['PATH'], testPath].join(path.delimiter)
 
       // should not be found
-      expect(await io.which(path.basename(dirPath))).toBe('')
+      await expect(io.which(path.basename(dirPath))).resolves.toBe('')
     } finally {
       process.env['PATH'] = originalPath
     }
   })
 
-  it('which() allows rooted path', async () => {
+  test('which() allows rooted path', async () => {
     // create an executable file
     const testPath = path.join(getTestTemp(), 'which-allows-rooted-path')
     await io.mkdirP(testPath)
@@ -1052,12 +1033,14 @@ describe('which', () => {
     }
 
     // which the full path
-    expect(await io.which(filePath)).toBe(filePath)
-    expect(await io.which(filePath, false)).toBe(filePath)
-    expect(await io.which(filePath, true)).toBe(filePath)
+    await expect(io.which(filePath)).resolves.toBe(filePath)
+    await expect(io.which(filePath, false)).resolves.toBe(filePath)
+    await expect(io.which(filePath, true)).resolves.toBe(filePath)
   })
 
-  it('which() requires rooted path to be executable', async () => {
+  test('which() requires rooted path to be executable', async () => {
+    expect.assertions(3)
+
     // create a non-executable file
     // on Windows, should not end in valid PATHEXT
     // on Mac/Linux, should not have executable bit
@@ -1077,19 +1060,16 @@ describe('which', () => {
     }
 
     // should not be found
-    expect(await io.which(filePath)).toBe('')
-    expect(await io.which(filePath, false)).toBe('')
-    let failed = false
-    try {
-      await io.which(filePath, true)
-    } catch (err) {
-      failed = true
-    }
+    await expect(io.which(filePath)).resolves.toBe('')
+    await expect(io.which(filePath, false)).resolves.toBe('')
 
-    expect(failed).toBe(true)
+    // eslint-disable-next-line vitest/require-to-throw-message
+    await expect(io.which(filePath, true)).rejects.toThrow()
   })
 
-  it('which() requires rooted path to be a file', async () => {
+  test('which() requires rooted path to be a file', async () => {
+    expect.assertions(3)
+
     // create a dir
     const testPath = path.join(
       getTestTemp(),
@@ -1106,37 +1086,30 @@ describe('which', () => {
     }
 
     // should not be found
-    expect(await io.which(dirPath)).toBe('')
-    expect(await io.which(dirPath, false)).toBe('')
-    let failed = false
-    try {
-      await io.which(dirPath, true)
-    } catch (err) {
-      failed = true
-    }
-
-    expect(failed).toBe(true)
+    await expect(io.which(dirPath)).resolves.toBe('')
+    await expect(io.which(dirPath, false)).resolves.toBe('')
+    await expect(io.which(dirPath, true)).rejects.toThrow(
+      'Unable to locate executable file:'
+    )
   })
 
-  it('which() requires rooted path to exist', async () => {
+  test('which() requires rooted path to exist', async () => {
+    expect.assertions(3)
+
     let filePath = path.join(__dirname, 'no-such-file')
     if (process.platform === 'win32') {
       filePath += '.exe'
     }
 
-    expect(await io.which(filePath)).toBe('')
-    expect(await io.which(filePath, false)).toBe('')
-    let failed = false
-    try {
-      await io.which(filePath, true)
-    } catch (err) {
-      failed = true
-    }
+    await expect(io.which(filePath)).resolves.toBe('')
+    await expect(io.which(filePath, false)).resolves.toBe('')
 
-    expect(failed).toBe(true)
+    await expect(io.which(filePath, true)).rejects.toThrow(
+      'Unable to locate executable file:'
+    )
   })
 
-  it('which() does not allow separators', async () => {
+  test('which() does not allow separators', async () => {
     // create an executable file
     const testDirName = 'which-does-not-allow-separators'
     const testPath = path.join(getTestTemp(), testDirName)
@@ -1158,11 +1131,11 @@ describe('which', () => {
       process.env['PATH'] = [process.env['PATH'], testPath].join(path.delimiter)
 
       // which "dir/file", should not be found
-      expect(await io.which(`${testDirName}/${fileName}`)).toBe('')
+      await expect(io.which(`${testDirName}/${fileName}`)).resolves.toBe('')
 
       // on Windows, also try "dir\file"
       if (process.platform === 'win32') {
-        expect(await io.which(`${testDirName}\\${fileName}`)).toBe('')
+        await expect(io.which(`${testDirName}\\${fileName}`)).resolves.toBe('')
       }
     } finally {
       process.env['PATH'] = originalPath
@@ -1170,16 +1143,16 @@ describe('which', () => {
   })
 
   if (process.platform === 'win32') {
-    it('which() resolves actual case file name when extension is applied', async () => {
+    test('which() resolves actual case file name when extension is applied', async () => {
       const comspec: string = process.env['ComSpec'] || ''
       expect(!!comspec).toBe(true)
-      expect(await io.which('CmD.eXe')).toBe(
+      await expect(io.which('CmD.eXe')).resolves.toBe(
         path.join(path.dirname(comspec), 'CmD.eXe')
       )
-      expect(await io.which('CmD')).toBe(comspec)
+      await expect(io.which('CmD')).resolves.toBe(comspec)
     })
 
-    it('which() appends ext on windows', async () => {
+    test('which() appends ext on windows', async () => {
       // create executable files
       const testPath = path.join(getTestTemp(), 'which-appends-ext-on-windows')
       await io.mkdirP(testPath)
@@ -1195,7 +1168,8 @@ describe('which', () => {
         )
       }
       for (const fileName of Object.keys(files)) {
-        await fs.writeFile(files[fileName], '')
+        const file = files[fileName] as string
+        await fs.writeFile(file, '')
       }
 
       const originalPath = process.env['PATH']
@@ -1207,14 +1181,14 @@ describe('which', () => {
 
         // find each file
         for (const fileName of Object.keys(files)) {
-          expect(await io.which(fileName)).toBe(files[fileName])
+          await expect(io.which(fileName)).resolves.toBe(files[fileName])
         }
       } finally {
         process.env['PATH'] = originalPath
       }
     })
 
-    it('which() appends ext on windows when rooted', async () => {
+    test('which() appends ext on windows when rooted', async () => {
       // create executable files
       const testPath = path.join(
         getTestTemp(),
@@ -1244,16 +1218,17 @@ describe('which', () => {
         'which-test-file-5.txt.com'
       )
       for (const fileName of Object.keys(files)) {
-        await fs.writeFile(files[fileName], '')
+        const file = files[fileName] as string
+        await fs.writeFile(file, '')
       }
 
       // find each file
       for (const fileName of Object.keys(files)) {
-        expect(await io.which(fileName)).toBe(files[fileName])
+        await expect(io.which(fileName)).resolves.toBe(files[fileName])
       }
     })
 
-    it('which() prefer exact match on windows', async () => {
+    test('which() prefer exact match on windows', async () => {
       // create two executable files:
       //   which-test-file.bat
       //   which-test-file.bat.exe
@@ -1277,13 +1252,13 @@ describe('which', () => {
         process.env[
           'PATH'
         ] = `${process.env['PATH']}${path.delimiter}${testPath}`
-        expect(await io.which(fileName)).toBe(expectedFilePath)
+        await expect(io.which(fileName)).resolves.toBe(expectedFilePath)
       } finally {
         process.env['PATH'] = originalPath
       }
     })
 
-    it('which() prefer exact match on windows when rooted', async () => {
+    test('which() prefer exact match on windows when rooted', async () => {
       // create two executable files:
       //   which-test-file.bat
       //   which-test-file.bat.exe
@@ -1302,12 +1277,12 @@ describe('which', () => {
       const notExpectedFilePath = path.join(testPath, `${fileName}.exe`)
       await fs.writeFile(expectedFilePath, '')
       await fs.writeFile(notExpectedFilePath, '')
-      expect(await io.which(path.join(testPath, fileName))).toBe(
+      await expect(io.which(path.join(testPath, fileName))).resolves.toBe(
         expectedFilePath
       )
     })
 
-    it('which() searches ext in order', async () => {
+    test('which() searches ext in order', async () => {
       const testPath = path.join(getTestTemp(), 'which-searches-ext-in-order')
 
       // create a directory for testing .COM order preference
@@ -1375,25 +1350,25 @@ describe('which', () => {
       try {
         // test .COM
         process.env['PATH'] = `${comTestPath}${path.delimiter}${originalPath}`
-        expect(await io.which(fileNameWithoutExtension)).toBe(
+        await expect(io.which(fileNameWithoutExtension)).resolves.toBe(
           path.join(comTestPath, `${fileNameWithoutExtension}.com`)
         )
 
         // test .EXE
         process.env['PATH'] = `${exeTestPath}${path.delimiter}${originalPath}`
-        expect(await io.which(fileNameWithoutExtension)).toBe(
+        await expect(io.which(fileNameWithoutExtension)).resolves.toBe(
           path.join(exeTestPath, `${fileNameWithoutExtension}.exe`)
         )
 
         // test .BAT
         process.env['PATH'] = `${batTestPath}${path.delimiter}${originalPath}`
-        expect(await io.which(fileNameWithoutExtension)).toBe(
+        await expect(io.which(fileNameWithoutExtension)).resolves.toBe(
           path.join(batTestPath, `${fileNameWithoutExtension}.bat`)
         )
 
         // test .CMD
         process.env['PATH'] = `${cmdTestPath}${path.delimiter}${originalPath}`
-        expect(await io.which(fileNameWithoutExtension)).toBe(
+        await expect(io.which(fileNameWithoutExtension)).resolves.toBe(
           path.join(cmdTestPath, `${fileNameWithoutExtension}.cmd`)
         )
       } finally {
@@ -1408,11 +1383,13 @@ describe('findInPath', () => {
     await io.rmRF(getTestTemp())
   })
 
-  it('findInPath() not found', async () => {
-    expect(await io.findInPath('findInPath-test-no-such-file')).toEqual([])
+  test('findInPath() not found', async () => {
+    await expect(
+      io.findInPath('findInPath-test-no-such-file')
+    ).resolves.toStrictEqual([])
   })
 
-  it('findInPath() finds file names', async () => {
+  test('findInPath() finds file names', async () => {
     // create executable files
     let fileName = 'FindInPath-Test-File'
     if (process.platform === 'win32') {
@@ -1443,7 +1420,7 @@ describe('findInPath', () => {
         ] = `${process.env['PATH']}${path.delimiter}${testPath}`
       }
       // exact file names
-      expect(await io.findInPath(fileName)).toEqual(filePaths)
+      await expect(io.findInPath(fileName)).resolves.toStrictEqual(filePaths)
     } finally {
       process.env['PATH'] = originalPath
     }
@@ -1471,24 +1448,24 @@ async function findsExecutableWithScopedPermissions(
     process.env['PATH'] = `${process.env['PATH']}${path.delimiter}${testPath}`
 
     // exact file name
-    expect(await io.which(fileName)).toBe(filePath)
-    expect(await io.which(fileName, false)).toBe(filePath)
-    expect(await io.which(fileName, true)).toBe(filePath)
+    await expect(io.which(fileName)).resolves.toBe(filePath)
+    await expect(io.which(fileName, false)).resolves.toBe(filePath)
+    await expect(io.which(fileName, true)).resolves.toBe(filePath)
 
     if (process.platform === 'darwin') {
       // not case sensitive on Mac
-      expect(await io.which(fileName.toUpperCase())).toBe(
+      await expect(io.which(fileName.toUpperCase())).resolves.toBe(
         path.join(testPath, fileName.toUpperCase())
       )
-      expect(await io.which(fileName.toUpperCase(), false)).toBe(
+      await expect(io.which(fileName.toUpperCase(), false)).resolves.toBe(
         path.join(testPath, fileName.toUpperCase())
       )
-      expect(await io.which(fileName.toUpperCase(), true)).toBe(
+      await expect(io.which(fileName.toUpperCase(), true)).resolves.toBe(
         path.join(testPath, fileName.toUpperCase())
       )
     } else {
       // case sensitive on Linux
-      expect(await io.which(fileName.toUpperCase())).toBe('')
+      await expect(io.which(fileName.toUpperCase())).resolves.toBe('')
     }
   } finally {
     process.env['PATH'] = originalPath
@@ -1497,7 +1474,7 @@ async function findsExecutableWithScopedPermissions(
 
 // Assert that a file exists
 async function assertExists(filePath: string): Promise<void> {
-  expect(await fs.stat(filePath)).toBeDefined()
+  await expect(fs.stat(filePath)).resolves.toBeDefined()
 }
 
 // Assert that reading a file raises an ENOENT error (does not exist)
@@ -1514,7 +1491,7 @@ function chmod(file: string, mode: string): void {
 }
 
 async function createHiddenDirectory(dir: string): Promise<void> {
-  if (!path.basename(dir).match(/^\./)) {
+  if (!/^\./.test(path.basename(dir))) {
     throw new Error(`Expected dir '${dir}' to start with '.'.`)
   }
 
@@ -1531,7 +1508,7 @@ async function createHiddenDirectory(dir: string): Promise<void> {
 }
 
 async function createHiddenFile(file: string, content: string): Promise<void> {
-  if (!path.basename(file).match(/^\./)) {
+  if (!/^\./.test(path.basename(file))) {
     throw new Error(`Expected dir '${file}' to start with '.'.`)
   }
 

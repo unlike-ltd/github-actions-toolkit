@@ -52,7 +52,8 @@ const config = {
   ],
   rules: {
     'unicorn/prevent-abbreviations': 'off',
-    'no-prototype-builtins': 'off'
+    'no-prototype-builtins': 'off',
+    'turbo/no-undeclared-env-vars': 'off'
   }
 }
 
