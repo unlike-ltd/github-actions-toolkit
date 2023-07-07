@@ -10,12 +10,10 @@ import os from 'node:os'
 import path from 'node:path'
 import url from 'node:url'
 
-import {beforeAll, describe, expect, test} from 'vitest'
+import {beforeAll, describe, expect, test, vi} from 'vitest'
 
 import * as ioUtil from '../src/io-util.js'
 import * as io from '../src/io.js'
-
-const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
 
 describe('cp', () => {
   beforeAll(async () => {
@@ -1427,9 +1425,9 @@ describe('findInPath', () => {
   })
 })
 
-async function findsExecutableWithScopedPermissions(
+const findsExecutableWithScopedPermissions = async (
   chmodOptions: string
-): Promise<void> {
+): Promise<void> => {
   // create a executable file
   const testPath = path.join(getTestTemp(), 'which-finds-file-name')
   await io.mkdirP(testPath)
@@ -1442,10 +1440,9 @@ async function findsExecutableWithScopedPermissions(
   await fs.writeFile(filePath, '')
   chmod(filePath, chmodOptions)
 
-  const originalPath = process.env['PATH']
   try {
     // update the PATH
-    process.env['PATH'] = `${process.env['PATH']}${path.delimiter}${testPath}`
+    vi.stubEnv('PATH', `${process.env['PATH']}${path.delimiter}${testPath}`)
 
     // exact file name
     await expect(io.which(fileName)).resolves.toBe(filePath)
@@ -1468,7 +1465,7 @@ async function findsExecutableWithScopedPermissions(
       await expect(io.which(fileName.toUpperCase())).resolves.toBe('')
     }
   } finally {
-    process.env['PATH'] = originalPath
+    vi.unstubAllEnvs()
   }
 }
 
@@ -1526,6 +1523,7 @@ async function createHiddenFile(file: string, content: string): Promise<void> {
   }
 }
 
+const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
 function getTestTemp(): string {
   return path.join(__dirname, '_temp')
 }
