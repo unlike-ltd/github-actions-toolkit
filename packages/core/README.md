@@ -6,8 +6,8 @@
 
 Supports
 
-- `NodeJS` ^16.20.0
-- Dual `CommonJS` / `ES` npm package
+- `NodeJS` >=18.16.1
+- `ES` module npm package
 - [Tree shaking](https://esbuild.github.io/api/#tree-shaking)
 
 ## Usage
@@ -31,14 +31,21 @@ Action inputs can be read with `getInput` which returns a `string` or `getBoolea
 Outputs can be set with `setOutput` which makes them available to be mapped into inputs of other actions to ensure they are decoupled.
 
 ```js
-const myInput = core.getInput('inputName', {required: true})
-const myBooleanInput = core.getBooleanInput('booleanInputName', {
+import {
+  getBooleanInput,
+  getInput,
+  getMultilineInput,
+  setOutput
+} from '@unlike/github-actions-core'
+
+const myInput = getInput('inputName', {required: true})
+const myBooleanInput = getBooleanInput('booleanInputName', {
   required: true
 })
-const myMultilineInput = core.getMultilineInput('multilineInputName', {
+const myMultilineInput = getMultilineInput('multilineInputName', {
   required: true
 })
-core.setOutput('outputKey', 'outputVal')
+setOutput('outputKey', 'outputVal')
 ```
 
 #### Exporting variables
@@ -46,7 +53,7 @@ core.setOutput('outputKey', 'outputVal')
 Since each step runs in a separate process, you can use `exportVariable` to add it to this step and future steps environment blocks.
 
 ```js
-core.exportVariable('envVar', 'Val')
+exportVariable('envVar', 'Val')
 ```
 
 #### Setting a secret
@@ -54,7 +61,7 @@ core.exportVariable('envVar', 'Val')
 Setting a secret registers the secret with the runner to ensure it is masked in logs.
 
 ```js
-core.setSecret('myPassword')
+setSecret('myPassword')
 ```
 
 #### PATH Manipulation
@@ -62,7 +69,7 @@ core.setSecret('myPassword')
 To make a tool's path available in the path for the remainder of the job (without altering the machine or containers state), use `addPath`. The runner will prepend the path given to the jobs PATH.
 
 ```js
-core.addPath('/path/to/mytool')
+addPath('/path/to/mytool')
 ```
 
 #### Exit codes
@@ -80,8 +87,6 @@ try {
 }
 ```
 
-Note that `setNeutral` is not yet implemented in actions V2 but equivalent functionality is being planned.
-
 #### Logging
 
 Finally, this library provides some utilities for logging. Note that debug logging is hidden from the logs by default. This behavior can be toggled by enabling the [Step Debug Logs](../../docs/action-debugging.md#step-debug-logs).
@@ -89,7 +94,7 @@ Finally, this library provides some utilities for logging. Note that debug loggi
 ```js
 import * as core from '@unlike/github-actions-core'
 
-const myInput = core.getInput('input')
+const myInput = getInput('input')
 try {
   core.debug('Inside try block')
 
