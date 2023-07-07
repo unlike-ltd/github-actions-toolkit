@@ -973,7 +973,9 @@ describe('which', () => {
   })
 
   // eslint-disable-next-line vitest/require-hook
-  describe.skipIf(process.platform !== 'darwin')('for darwin', () => {
+  describe.skipIf(
+    process.platform === 'win32' || process.platform !== 'darwin'
+  )('for darwin', () => {
     test.each(['u=rwx,g=r,o=r', 'u=rw,g=rx,o=r', 'u=rw,g=r,o=rx'])(
       'which() finds executable with different permissions : %s',
       async permission => {
@@ -1029,7 +1031,11 @@ describe('which', () => {
         // update the PATH
         vi.stubEnv('PATH', `${process.env['PATH']}${path.delimiter}${testPath}`)
 
-        expect.assertions(1)
+        expect.assertions(4)
+
+        await expect(io.which(fileName)).resolves.toBe(filePath)
+        await expect(io.which(fileName, false)).resolves.toBe(filePath)
+        await expect(io.which(fileName, true)).resolves.toBe(filePath)
 
         // case sensitive on Linux
         await expect(io.which(fileName.toUpperCase())).resolves.toBe('')
