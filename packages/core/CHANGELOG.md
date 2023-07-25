@@ -1,5 +1,11 @@
 # @unlike/github-actions-core
 
+## 0.1.1
+
+### Patch Changes
+
+- fbcb7f9: bump esbuild to 0.18.16
+
 ## 0.1.0
 
 ### Minor Changes
