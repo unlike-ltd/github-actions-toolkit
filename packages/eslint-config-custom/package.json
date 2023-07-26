@@ -13,7 +13,7 @@
     "eslint-config-prettier": "8.8.0",
     "eslint-config-turbo": "1.10.11",
     "eslint-plugin-prettier": "5.0.0",
-    "eslint-plugin-unicorn": "48.0.0",
+    "eslint-plugin-unicorn": "48.0.1",
     "eslint-plugin-vitest": "0.2.6"
   },
   "devDependencies": {
