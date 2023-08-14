@@ -43,9 +43,9 @@
   },
   "devDependencies": {
     "@types/node": "18.15.3",
-    "esbuild": "0.18.16",
+    "esbuild": "0.19.1",
     "tsconfig": "workspace:*",
-    "tsup": "7.1.0",
+    "tsup": "7.2.0",
     "typescript": "5.1.6"
   }
 }
