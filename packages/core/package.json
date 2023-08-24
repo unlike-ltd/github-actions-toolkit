@@ -42,7 +42,7 @@
     "@actions/http-client": "^2.1.0"
   },
   "devDependencies": {
-    "@types/node": "18.15.3",
+    "@types/node": "20.5.4",
     "esbuild": "0.18.16",
     "tsconfig": "workspace:*",
     "tsup": "7.1.0",
