@@ -31,7 +31,7 @@
     "eslint-config-custom": "workspace:*",
     "prettier": "3.0.0",
     "tsconfig": "workspace:*",
-    "turbo": "1.10.11",
+    "turbo": "1.10.14",
     "typescript": "5.1.6",
     "vitest": "0.33.0"
   }
