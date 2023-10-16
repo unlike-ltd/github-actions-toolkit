@@ -9,8 +9,8 @@ importers:
   .:
     devDependencies:
       '@arethetypeswrong/cli':
-        specifier: ^0.7.0
-        version: 0.7.0
+        specifier: ^0.12.2
+        version: 0.12.2
       '@changesets/changelog-github':
         specifier: ^0.4.8
         version: 0.4.8
@@ -86,7 +86,7 @@ importers:
         version: 1.10.14(eslint@8.45.0)
       eslint-plugin-prettier:
         specifier: 5.0.0
-        version: 5.0.0(@types/eslint@8.44.0)(eslint-config-prettier@8.8.0)(eslint@8.45.0)(prettier@3.0.0)
+        version: 5.0.0(@types/eslint@8.44.0)(eslint-config-prettier@8.8.0)(eslint@8.45.0)(prettier@3.0.3)
       eslint-plugin-unicorn:
         specifier: 48.0.0
         version: 48.0.0(eslint@8.45.0)
@@ -127,32 +127,34 @@ packages:
       '@jridgewell/trace-mapping': 0.3.18
     dev: true
 
-  /@andrewbranch/untar.js@1.0.2:
-    resolution: {integrity: sha512-hL80MHK3b++pEp6K23+Nl5r5D1F19DRagp2ruCBIv4McyCiLKq67vUNvEQY1aGCAKNZ8GxV23n5MhOm7RwO8Pg==}
+  /@andrewbranch/untar.js@1.0.3:
+    resolution: {integrity: sha512-Jh15/qVmrLGhkKJBdXlK1+9tY4lZruYjsgkDFj08ZmDiWVBLJcqkok7Z0/R0In+i1rScBpJlSvrTS2Lm41Pbnw==}
     dev: true
 
-  /@arethetypeswrong/cli@0.7.0:
-    resolution: {integrity: sha512-fNX9abfPkhYPUlfSI38L0TtbJWIIGuMF1TQsnw9GzAeg6FFWEj5HYoI0pRj049p++BgM9/ikRy1RS2BBDkCHXQ==}
+  /@arethetypeswrong/cli@0.12.2:
+    resolution: {integrity: sha512-SE4Rqy8LM8zgRLeVXZqFIOg4w4TCDG2AMguuZDDRcrUmVQj7phW0tWJnKwsZtyJ6SdqXTIzWvGYiUJiHg2hb9w==}
     hasBin: true
     dependencies:
-      '@arethetypeswrong/core': 0.7.0
+      '@arethetypeswrong/core': 0.12.2
       chalk: 4.1.2
       cli-table3: 0.6.3
       commander: 10.0.1
       marked: 5.1.2
       marked-terminal: 5.2.0(marked@5.1.2)
+      node-fetch: 2.6.12
+      semver: 7.5.4
     transitivePeerDependencies:
       - encoding
     dev: true
 
-  /@arethetypeswrong/core@0.7.0:
-    resolution: {integrity: sha512-qwWmIm8YNvmSOgDXEDJUEjd1yGX4bTY0838A+wCTHlOm2n/lFhjauZjAxfKu9DHn2TSGnHahD07tGDPp4I7fSg==}
+  /@arethetypeswrong/core@0.12.2:
+    resolution: {integrity: sha512-ez/quGfC6RVg7VrwCgMVreJ01jbkfJQRNxOG7Bpl4YGcPRs45ZE1AzpHiIdzqfwFg9EBVSaewaffrsK5MVbALw==}
     dependencies:
-      '@andrewbranch/untar.js': 1.0.2
+      '@andrewbranch/untar.js': 1.0.3
       fetch-ponyfill: 7.1.0
       fflate: 0.7.4
       semver: 7.5.4
-      typescript: 5.1.6
+      typescript: 5.2.2
       validate-npm-package-name: 5.0.0
     transitivePeerDependencies:
       - encoding
@@ -1897,7 +1899,7 @@ packages:
       eslint-plugin-turbo: 1.10.14(eslint@8.45.0)
     dev: false
 
-  /eslint-plugin-prettier@5.0.0(@types/eslint@8.44.0)(eslint-config-prettier@8.8.0)(eslint@8.45.0)(prettier@3.0.0):
+  /eslint-plugin-prettier@5.0.0(@types/eslint@8.44.0)(eslint-config-prettier@8.8.0)(eslint@8.45.0)(prettier@3.0.3):
     resolution: {integrity: sha512-AgaZCVuYDXHUGxj/ZGu1u8H8CYgDY3iG6w5kUFw4AzMVXzB7VvbKgYR4nATIN+OvUrghMbiDLeimVjVY5ilq3w==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
@@ -1914,7 +1916,7 @@ packages:
       '@types/eslint': 8.44.0
       eslint: 8.45.0
       eslint-config-prettier: 8.8.0(eslint@8.45.0)
-      prettier: 3.0.0
+      prettier: 3.0.3
       prettier-linter-helpers: 1.0.0
       synckit: 0.8.5
     dev: false
@@ -3272,17 +3274,10 @@ packages:
     hasBin: true
     dev: true
 
-  /prettier@3.0.0:
-    resolution: {integrity: sha512-zBf5eHpwHOGPC47h0zrPyNn+eAEIdEzfywMoYn2XPi0P44Zp0tSq64rq0xAREh4auw2cJZHo9QUob+NqCQky4g==}
-    engines: {node: '>=14'}
-    hasBin: true
-    dev: false
-
   /prettier@3.0.3:
     resolution: {integrity: sha512-L/4pUDMxcNa8R/EthV08Zt42WBO4h1rarVtK0K+QJG0X187OLo7l699jWw0GKuwzkPQ//jMFA/8Xm6Fh3J/DAg==}
     engines: {node: '>=14'}
     hasBin: true
-    dev: true
 
   /pretty-format@29.6.1:
     resolution: {integrity: sha512-7jRj+yXO0W7e4/tSJKoR7HRIHLPPjtNaUGG2xxKQnGvPNRkgWcQ0AZX6P4KBRJN4FcTBWb3sa7DVUJmocYuoog==}
@@ -4011,6 +4006,12 @@ packages:
   /typescript@5.1.6:
     resolution: {integrity: sha512-zaWCozRZ6DLEWAWFrVDz1H6FVXzUSfTy5FUMWsQlU8Ym5JP9eO4xkTIROFCQvhQf61z6O/G6ugw3SgAnvvm+HA==}
     engines: {node: '>=14.17'}
+
+  /typescript@5.2.2:
+    resolution: {integrity: sha512-mI4WrpHsbCIcwT9cF4FZvr80QUeKvsUsUvKDoR+X/7XHQH98xYD8YHZg7ANtz2GtZt/CBq2QJ0thkGJMHfqc1w==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+    dev: true
 
   /ufo@1.1.2:
     resolution: {integrity: sha512-TrY6DsjTQQgyS3E3dBaOXf0TpPD8u9FVrVYmKVegJuFw51n/YB9XPt+U6ydzFG5ZIN7+DIjPbNmXoBj9esYhgQ==}
