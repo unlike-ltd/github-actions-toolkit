@@ -1,5 +1,11 @@
 # @unlike/github-actions-core
 
+## 0.1.3
+
+### Patch Changes
+
+- [`59f47dc`](https://github.com/unlike-ltd/github-actions-toolkit/commit/59f47dc63512a688d38953523623ea1c7f55432c) Thanks [@andykenward](https://github.com/andykenward)! - chore(deps): bump @actions/http-client from 2.1.0 to 2.2.0
+
 ## 0.1.2
 
 ### Patch Changes
