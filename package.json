@@ -18,9 +18,9 @@
   },
   "engines": {
     "node": ">=18.16.1",
-    "pnpm": ">=8.6.6"
+    "pnpm": ">=8.10.0"
   },
-  "packageManager": "pnpm@8.6.9",
+  "packageManager": "pnpm@8.10.0",
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.7.0",
     "@changesets/changelog-github": "^0.4.8",
