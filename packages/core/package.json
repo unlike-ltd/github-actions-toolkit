@@ -39,7 +39,7 @@
     "node": ">=18.16.1"
   },
   "dependencies": {
-    "@actions/http-client": "^2.1.0"
+    "@actions/http-client": "^2.2.0"
   },
   "devDependencies": {
     "@types/node": "18.15.3",
