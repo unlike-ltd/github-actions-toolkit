@@ -1,5 +1,15 @@
 # @unlike/github-actions-core
 
+## 1.0.0
+
+### Major Changes
+
+- [`cdfb014`](https://github.com/unlike-ltd/github-actions-toolkit/commit/cdfb014c523846c9705bffc4dc15d65304d347e7) Thanks [@andykenward](https://github.com/andykenward)! - upgrade node 18 to 20
+
+  BREAKING CHANGES
+
+  Drop node < 20
+
 ## 0.1.3
 
 ### Patch Changes
