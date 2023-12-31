@@ -3,7 +3,7 @@
   "display": "Default",
   "extends": [
     "@tsconfig/strictest/tsconfig.json",
-    "@tsconfig/node18/tsconfig.json"
+    "@tsconfig/node20/tsconfig.json"
   ],
   "compilerOptions": {
     "resolveJsonModule": true

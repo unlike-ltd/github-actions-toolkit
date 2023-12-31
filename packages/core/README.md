@@ -6,7 +6,7 @@
 
 Supports
 
-- `NodeJS` >=18.16.1
+- `NodeJS` >=20.10.0
 - `ES` module npm package
 - [Tree shaking](https://esbuild.github.io/api/#tree-shaking)
 

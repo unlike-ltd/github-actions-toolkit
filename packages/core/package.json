@@ -36,13 +36,13 @@
     "url": "https://github.com/unlike-ltd/github-actions-toolkit/issues"
   },
   "engines": {
-    "node": ">=18.16.1"
+    "node": ">=20.10.0"
   },
   "dependencies": {
     "@actions/http-client": "^2.2.0"
   },
   "devDependencies": {
-    "@types/node": "18.18.7",
+    "@types/node": "20.10.6",
     "esbuild": "0.19.11",
     "tsconfig": "workspace:*",
     "tsup": "8.0.1",

@@ -21,7 +21,7 @@ export default defineConfig(() => {
     treeshake: false,
     dts: true,
     platform: 'node',
-    target: 'node18.16.1',
+    target: 'node20.10.0',
     shims: true
   }
 
