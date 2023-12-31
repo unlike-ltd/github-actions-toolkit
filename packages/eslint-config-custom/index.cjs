@@ -36,6 +36,7 @@ const config = {
       plugins: ['vitest'],
       extends: ['plugin:vitest/all'],
       rules: {
+        'turbo/no-undeclared-env-vars': 'off',
         'vitest/consistent-test-it': ['error', {fn: 'test'}],
         'vitest/no-hooks': [
           'error',
