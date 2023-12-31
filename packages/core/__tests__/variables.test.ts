@@ -1,4 +1,4 @@
-import type {SpyInstance} from 'vitest'
+import type {MockInstance} from 'vitest'
 
 import fs from 'node:fs'
 import os from 'node:os'
@@ -28,7 +28,7 @@ vi.mock('node:crypto', () => ({
   randomUUID: () => UUID
 }))
 describe('variables', () => {
-  let stdOutSpy: SpyInstance<
+  let stdOutSpy: MockInstance<
     Parameters<typeof process.stdout.write>,
     ReturnType<typeof process.stdout.write>
   >

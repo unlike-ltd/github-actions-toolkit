@@ -1,4 +1,4 @@
-import type {SpyInstance} from 'vitest'
+import type {MockInstance} from 'vitest'
 
 import os from 'node:os'
 import process from 'node:process'
@@ -8,7 +8,7 @@ import {beforeEach, describe, expect, test, vi} from 'vitest'
 import * as command from '../../src/lib/command.js'
 
 describe('lib/command', () => {
-  let stdOutSpy: SpyInstance<
+  let stdOutSpy: MockInstance<
     Parameters<typeof process.stdout.write>,
     ReturnType<typeof process.stdout.write>
   >

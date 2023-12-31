@@ -1,4 +1,4 @@
-import type {SpyInstance} from 'vitest'
+import type {MockInstance} from 'vitest'
 
 import os from 'node:os'
 
@@ -8,7 +8,7 @@ import * as errors from '../src/errors.js'
 import {ExitCode} from '../src/types.js'
 
 describe('errors', () => {
-  let stdOutSpy: SpyInstance<
+  let stdOutSpy: MockInstance<
     Parameters<typeof process.stdout.write>,
     ReturnType<typeof process.stdout.write>
   >
