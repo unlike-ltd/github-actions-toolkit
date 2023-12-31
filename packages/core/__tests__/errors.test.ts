@@ -27,6 +27,8 @@ describe('errors', () => {
 
   describe('setFailed', () => {
     test('setFailed sets the correct exit code and failure message', () => {
+      expect.assertions(3)
+
       errors.setFailed('Failure message')
 
       expect(process.exitCode).toBe(ExitCode.Failure)
@@ -34,6 +36,8 @@ describe('errors', () => {
     })
 
     test('setFailed escapes the failure message', () => {
+      expect.assertions(3)
+
       errors.setFailed('Failure \r\n\nmessage\r')
 
       expect(process.exitCode).toBe(ExitCode.Failure)
@@ -41,6 +45,8 @@ describe('errors', () => {
     })
 
     test('setFailed handles Error', () => {
+      expect.assertions(3)
+
       const message = 'this is my error message'
       errors.setFailed(new Error(message))
 
@@ -51,22 +57,30 @@ describe('errors', () => {
 
   describe('error', () => {
     test('error sets the correct error message', () => {
+      expect.assertions(2)
+
       errors.error('Error message')
       assertWriteCalls([`::error::Error message${os.EOL}`])
     })
 
     test('error escapes the error message', () => {
+      expect.assertions(2)
+
       errors.error('Error message\r\n\n')
       assertWriteCalls([`::error::Error message%0D%0A%0A${os.EOL}`])
     })
 
     test('error handles an error object', () => {
+      expect.assertions(2)
+
       const message = 'this is my error message'
       errors.error(new Error(message))
       assertWriteCalls([`::error::Error: ${message}${os.EOL}`])
     })
 
     test('error handles parameters correctly', () => {
+      expect.assertions(2)
+
       const message = 'this is my error message'
       errors.error(new Error(message), {
         title: 'A title',

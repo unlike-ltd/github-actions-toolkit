@@ -5,6 +5,8 @@ import {toCommandProperties} from '../../src/lib/utils.js'
 describe('lib/utils', () => {
   describe('toCommandProperties', () => {
     test('annotations map field names correctly', () => {
+      expect.assertions(8)
+
       const commandProperties = toCommandProperties({
         title: 'A title',
         file: 'root/test.txt',

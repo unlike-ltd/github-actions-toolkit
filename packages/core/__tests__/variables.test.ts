@@ -55,11 +55,15 @@ describe('variables', () => {
 
   describe('exportVariable', () => {
     test('legacy exportVariable produces the correct command and sets the env', () => {
+      expect.assertions(2)
+
       exportVariable('my var', 'var val')
       assertWriteCalls([`::set-env name=my var::var val${os.EOL}`])
     })
 
     test('legacy exportVariable escapes variable names', () => {
+      expect.assertions(3)
+
       exportVariable('special char var \r\n,:', 'special val')
       expect(process.env['special char var \r\n,:']).toBe('special val')
       assertWriteCalls([
@@ -68,22 +72,30 @@ describe('variables', () => {
     })
 
     test('legacy exportVariable escapes variable values', () => {
+      expect.assertions(3)
+
       exportVariable('my var2', 'var val\r\n')
       expect(process.env['my var2']).toBe('var val\r\n')
       assertWriteCalls([`::set-env name=my var2::var val%0D%0A${os.EOL}`])
     })
 
     test('legacy exportVariable handles boolean inputs', () => {
+      expect.assertions(2)
+
       exportVariable('my var', true)
       assertWriteCalls([`::set-env name=my var::true${os.EOL}`])
     })
 
     test('legacy exportVariable handles number inputs', () => {
+      expect.assertions(2)
+
       exportVariable('my var', 5)
       assertWriteCalls([`::set-env name=my var::5${os.EOL}`])
     })
 
     test('exportVariable produces the correct command and sets the env', () => {
+      expect.assertions(1)
+
       const command = 'ENV'
       createFileCommandFile(command)
       exportVariable('my var', 'var val')
@@ -94,6 +106,8 @@ describe('variables', () => {
     })
 
     test('exportVariable handles boolean inputs', () => {
+      expect.assertions(1)
+
       const command = 'ENV'
       createFileCommandFile(command)
       exportVariable('my var', true)
@@ -104,6 +118,8 @@ describe('variables', () => {
     })
 
     test('exportVariable handles number inputs', () => {
+      expect.assertions(1)
+
       const command = 'ENV'
       createFileCommandFile(command)
       exportVariable('my var', 5)
@@ -114,6 +130,8 @@ describe('variables', () => {
     })
 
     test('exportVariable does not allow delimiter as value', () => {
+      expect.assertions(1)
+
       const command = 'ENV'
       createFileCommandFile(command)
 
@@ -128,6 +146,8 @@ describe('variables', () => {
     })
 
     test('exportVariable does not allow delimiter as name', () => {
+      expect.assertions(1)
+
       const command = 'ENV'
       createFileCommandFile(command)
 
@@ -157,6 +177,8 @@ describe('variables', () => {
 
   describe('addPath', () => {
     test('prependPath produces the correct commands and sets the env', () => {
+      expect.assertions(2)
+
       const command = 'PATH'
       createFileCommandFile(command)
       addPath('myPath')
@@ -167,6 +189,8 @@ describe('variables', () => {
     })
 
     test('legacy prependPath produces the correct commands and sets the env', () => {
+      expect.assertions(3)
+
       addPath('myPath')
       expect(process.env['PATH']).toBe(
         `myPath${path.delimiter}path1${path.delimiter}path2`
@@ -177,48 +201,68 @@ describe('variables', () => {
 
   describe('getInput', () => {
     test('getInput gets non-required input', () => {
+      expect.assertions(1)
+
       expect(getInput('my input')).toBe('val')
     })
 
     test('getInput gets required input', () => {
+      expect.assertions(1)
+
       expect(getInput('my input', {required: true})).toBe('val')
     })
 
     test('getInput throws on missing required input', () => {
+      expect.assertions(1)
+
       expect(() => getInput('missing', {required: true})).toThrow(
         'Input required and not supplied: missing'
       )
     })
 
     test('getInput does not throw on missing non-required input', () => {
+      expect.assertions(1)
+
       expect(getInput('missing', {required: false})).toBe('')
     })
 
     test('getInput is case insensitive', () => {
+      expect.assertions(1)
+
       expect(getInput('My InPuT')).toBe('val')
     })
 
     test('getInput handles special characters', () => {
+      expect.assertions(1)
+
       expect(getInput('special chars_\'\t"\\')).toBe('\'\t"\\ response')
     })
 
     test('getInput handles multiple spaces', () => {
+      expect.assertions(1)
+
       expect(getInput('multiple spaces variable')).toBe(
         'I have multiple spaces'
       )
     })
 
     test('getInput trims whitespace by default', () => {
+      expect.assertions(1)
+
       expect(getInput('with trailing whitespace')).toBe('some val')
     })
 
     test('getInput trims whitespace when option is explicitly true', () => {
+      expect.assertions(1)
+
       expect(getInput('with trailing whitespace', {trimWhitespace: true})).toBe(
         'some val'
       )
     })
 
     test('getInput does not trim whitespace when option is false', () => {
+      expect.assertions(1)
+
       expect(
         getInput('with trailing whitespace', {trimWhitespace: false})
       ).toBe('  some val  ')
@@ -227,14 +271,20 @@ describe('variables', () => {
 
   describe('getBooleanInput', () => {
     test('getInput gets non-required boolean input', () => {
+      expect.assertions(1)
+
       expect(getBooleanInput('boolean input')).toBe(true)
     })
 
     test('getInput gets required input', () => {
+      expect.assertions(1)
+
       expect(getBooleanInput('boolean input', {required: true})).toBe(true)
     })
 
     test('getBooleanInput handles boolean input', () => {
+      expect.assertions(6)
+
       expect(getBooleanInput('boolean input true1')).toBe(true)
       expect(getBooleanInput('boolean input true2')).toBe(true)
       expect(getBooleanInput('boolean input true3')).toBe(true)
@@ -244,6 +294,8 @@ describe('variables', () => {
     })
 
     test('getBooleanInput handles wrong boolean input', () => {
+      expect.assertions(1)
+
       expect(() => getBooleanInput('wrong boolean input')).toThrow(
         'Input does not meet YAML 1.2 "Core Schema" specification: wrong boolean input\n' +
           `Support boolean input list: \`true | True | TRUE | false | False | FALSE\``
@@ -253,6 +305,8 @@ describe('variables', () => {
 
   describe('getMultilineInput', () => {
     test('getMultilineInput works', () => {
+      expect.assertions(1)
+
       expect(getMultilineInput('my input list')).toStrictEqual([
         'val1',
         'val2',
@@ -261,6 +315,8 @@ describe('variables', () => {
     })
 
     test('getMultilineInput trims whitespace by default', () => {
+      expect.assertions(1)
+
       expect(getMultilineInput('list with trailing whitespace')).toStrictEqual([
         'val1',
         'val2'
@@ -268,6 +324,8 @@ describe('variables', () => {
     })
 
     test('getMultilineInput trims whitespace when option is explicitly true', () => {
+      expect.assertions(1)
+
       expect(
         getMultilineInput('list with trailing whitespace', {
           trimWhitespace: true
@@ -276,6 +334,8 @@ describe('variables', () => {
     })
 
     test('getMultilineInput does not trim whitespace when option is false', () => {
+      expect.assertions(1)
+
       expect(
         getMultilineInput('list with trailing whitespace', {
           trimWhitespace: false
@@ -286,6 +346,8 @@ describe('variables', () => {
 
   describe('setOutput', () => {
     test('legacy setOutput produces the correct command', () => {
+      expect.assertions(3)
+
       setOutput('some output', 'some value')
       assertWriteCalls([
         os.EOL,
@@ -294,6 +356,8 @@ describe('variables', () => {
     })
 
     test('legacy setOutput handles bools', () => {
+      expect.assertions(3)
+
       setOutput('some output', false)
       assertWriteCalls([
         os.EOL,
@@ -302,11 +366,15 @@ describe('variables', () => {
     })
 
     test('legacy setOutput handles numbers', () => {
+      expect.assertions(3)
+
       setOutput('some output', 1.01)
       assertWriteCalls([os.EOL, `::set-output name=some output::1.01${os.EOL}`])
     })
 
     test('setOutput produces the correct command and sets the output', () => {
+      expect.assertions(1)
+
       const command = 'OUTPUT'
       createFileCommandFile(command)
       setOutput('my out', 'out val')
@@ -317,6 +385,8 @@ describe('variables', () => {
     })
 
     test('setOutput handles boolean inputs', () => {
+      expect.assertions(1)
+
       const command = 'OUTPUT'
       createFileCommandFile(command)
       setOutput('my out', true)
@@ -327,6 +397,8 @@ describe('variables', () => {
     })
 
     test('setOutput handles number inputs', () => {
+      expect.assertions(1)
+
       const command = 'OUTPUT'
       createFileCommandFile(command)
       setOutput('my out', 5)
@@ -337,6 +409,8 @@ describe('variables', () => {
     })
 
     test('setOutput does not allow delimiter as value', () => {
+      expect.assertions(1)
+
       const command = 'OUTPUT'
       createFileCommandFile(command)
 
@@ -351,6 +425,8 @@ describe('variables', () => {
     })
 
     test('setOutput does not allow delimiter as name', () => {
+      expect.assertions(1)
+
       const command = 'OUTPUT'
       createFileCommandFile(command)
 
@@ -367,11 +443,15 @@ describe('variables', () => {
 
   describe('setCommandEcho', () => {
     test('setCommandEcho can enable echoing', () => {
+      expect.assertions(2)
+
       setCommandEcho(true)
       assertWriteCalls([`::echo::on${os.EOL}`])
     })
 
     test('setCommandEcho can disable echoing', () => {
+      expect.assertions(2)
+
       setCommandEcho(false)
       assertWriteCalls([`::echo::off${os.EOL}`])
     })

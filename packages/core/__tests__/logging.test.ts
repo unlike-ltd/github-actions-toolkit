@@ -26,22 +26,30 @@ describe('logging', () => {
 
   describe('warning', () => {
     test('warning sets the correct message', () => {
+      expect.assertions(2)
+
       logging.warning('Warning')
       assertWriteCalls([`::warning::Warning${os.EOL}`])
     })
 
     test('warning escapes the message', () => {
+      expect.assertions(2)
+
       logging.warning('\r\nwarning\n')
       assertWriteCalls([`::warning::%0D%0Awarning%0A${os.EOL}`])
     })
 
     test('warning handles an error object', () => {
+      expect.assertions(2)
+
       const message = 'this is my error message'
       logging.warning(new Error(message))
       assertWriteCalls([`::warning::Error: ${message}${os.EOL}`])
     })
 
     test('warning handles parameters correctly', () => {
+      expect.assertions(2)
+
       const message = 'this is my error message'
       logging.warning(new Error(message), {
         title: 'A title',
@@ -59,22 +67,30 @@ describe('logging', () => {
 
   describe('notice', () => {
     test('notice sets the correct message', () => {
+      expect.assertions(2)
+
       logging.notice('Notice')
       assertWriteCalls([`::notice::Notice${os.EOL}`])
     })
 
     test('notice escapes the message', () => {
+      expect.assertions(2)
+
       logging.notice('\r\nnotice\n')
       assertWriteCalls([`::notice::%0D%0Anotice%0A${os.EOL}`])
     })
 
     test('notice handles an error object', () => {
+      expect.assertions(2)
+
       const message = 'this is my error message'
       logging.notice(new Error(message))
       assertWriteCalls([`::notice::Error: ${message}${os.EOL}`])
     })
 
     test('notice handles parameters correctly', () => {
+      expect.assertions(2)
+
       const message = 'this is my error message'
       logging.notice(new Error(message), {
         title: 'A title',
@@ -92,6 +108,8 @@ describe('logging', () => {
 
   describe('startGroup', () => {
     test('starts a new group', () => {
+      expect.assertions(2)
+
       logging.startGroup('my-group')
       assertWriteCalls([`::group::my-group${os.EOL}`])
     })
@@ -99,6 +117,8 @@ describe('logging', () => {
 
   describe('endGroup', () => {
     test('ends new group', () => {
+      expect.assertions(2)
+
       logging.endGroup()
       assertWriteCalls([`::endgroup::${os.EOL}`])
     })
@@ -106,6 +126,8 @@ describe('logging', () => {
 
   describe('group', () => {
     test('wraps an async call in a group', async () => {
+      expect.assertions(5)
+
       const result = await logging.group('mygroup', async () => {
         process.stdout.write('in my group\n')
         return true
@@ -121,11 +143,15 @@ describe('logging', () => {
 
   describe('debug', () => {
     test('sets the correct message', () => {
+      expect.assertions(2)
+
       logging.debug('Debug')
       assertWriteCalls([`::debug::Debug${os.EOL}`])
     })
 
     test(' escapes the message', () => {
+      expect.assertions(2)
+
       logging.debug('\r\ndebug\n')
       assertWriteCalls([`::debug::%0D%0Adebug%0A${os.EOL}`])
     })
@@ -133,6 +159,8 @@ describe('logging', () => {
 
   describe('isDebug', () => {
     test('check debug state', () => {
+      expect.assertions(2)
+
       const current = process.env['RUNNER_DEBUG']
       try {
         delete process.env['RUNNER_DEBUG']

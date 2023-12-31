@@ -48,6 +48,8 @@ describe.each<Items>([
   }
 ])('toPosixPath', ({name, input, expected}) => {
   test(`${name}`, () => {
+    expect.assertions(1)
+
     const result = toPosixPath(input)
     expect(result).toStrictEqual(expected)
   })
@@ -91,6 +93,8 @@ describe.each<Items>([
   }
 ])('toWin32Path', ({name, input, expected}) => {
   test(`${name}`, () => {
+    expect.assertions(1)
+
     const result = toWin32Path(input)
     expect(result).toStrictEqual(expected)
   })
@@ -134,6 +138,8 @@ describe.each<Items>([
   }
 ])('#toPlatformPath', ({name, input, expected}) => {
   test(`${name}`, () => {
+    expect.assertions(1)
+
     const result = toPlatformPath(input)
     expect(result).toStrictEqual(expected)
   })

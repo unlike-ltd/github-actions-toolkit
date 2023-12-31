@@ -47,21 +47,29 @@ describe('state', () => {
 
   describe('saveState', () => {
     test('legacy produces the correct command', () => {
+      expect.assertions(2)
+
       state.saveState('state_1', 'some value')
       assertWriteCalls([`::save-state name=state_1::some value${os.EOL}`])
     })
 
     test('legacy handles numbers', () => {
+      expect.assertions(2)
+
       state.saveState('state_1', 1)
       assertWriteCalls([`::save-state name=state_1::1${os.EOL}`])
     })
 
     test('legacy handles bools', () => {
+      expect.assertions(2)
+
       state.saveState('state_1', true)
       assertWriteCalls([`::save-state name=state_1::true${os.EOL}`])
     })
 
     test('produces the correct command and saves the state', () => {
+      expect.assertions(1)
+
       const command = 'STATE'
       createFileCommandFile(command)
       state.saveState('my state', 'out val')
@@ -72,6 +80,8 @@ describe('state', () => {
     })
 
     test('handles boolean inputs', () => {
+      expect.assertions(1)
+
       const command = 'STATE'
       createFileCommandFile(command)
       state.saveState('my state', true)
@@ -82,6 +92,8 @@ describe('state', () => {
     })
 
     test('handles number inputs', () => {
+      expect.assertions(1)
+
       const command = 'STATE'
       createFileCommandFile(command)
       state.saveState('my state', 5)
@@ -92,6 +104,8 @@ describe('state', () => {
     })
 
     test('does not allow delimiter as value', () => {
+      expect.assertions(1)
+
       const command = 'STATE'
       createFileCommandFile(command)
 
@@ -106,6 +120,8 @@ describe('state', () => {
     })
 
     test('does not allow delimiter as name', () => {
+      expect.assertions(1)
+
       const command = 'STATE'
       createFileCommandFile(command)
 
@@ -126,6 +142,8 @@ describe('state', () => {
     })
 
     test('getState gets wrapper action state', () => {
+      expect.assertions(1)
+
       expect(state.getState('TEST_1')).toBe('state_val')
     })
   })

@@ -27,11 +27,15 @@ describe('lib/command', () => {
   })
 
   test('command only', () => {
+    expect.assertions(2)
+
     command.issueCommand('some-command', {}, '')
     assertWriteCalls([`::some-command::${os.EOL}`])
   })
 
   test('command escapes message', () => {
+    expect.assertions(4)
+
     // Verify replaces each instance, not just first instance
     command.issueCommand(
       'some-command',
@@ -51,6 +55,8 @@ describe('lib/command', () => {
   })
 
   test('command escapes property', () => {
+    expect.assertions(4)
+
     // Verify replaces each instance, not just first instance
     command.issueCommand(
       'some-command',
@@ -76,11 +82,15 @@ describe('lib/command', () => {
   })
 
   test('command with message', () => {
+    expect.assertions(2)
+
     command.issueCommand('some-command', {}, 'some message')
     assertWriteCalls([`::some-command::some message${os.EOL}`])
   })
 
   test('command with message and properties', () => {
+    expect.assertions(2)
+
     command.issueCommand(
       'some-command',
       {prop1: 'value 1', prop2: 'value 2'},
@@ -92,11 +102,15 @@ describe('lib/command', () => {
   })
 
   test('command with one property', () => {
+    expect.assertions(2)
+
     command.issueCommand('some-command', {prop1: 'value 1'}, '')
     assertWriteCalls([`::some-command prop1=value 1::${os.EOL}`])
   })
 
   test('command with two properties', () => {
+    expect.assertions(2)
+
     command.issueCommand(
       'some-command',
       {prop1: 'value 1', prop2: 'value 2'},
@@ -106,6 +120,8 @@ describe('lib/command', () => {
   })
 
   test('command with three properties', () => {
+    expect.assertions(2)
+
     command.issueCommand(
       'some-command',
       {prop1: 'value 1', prop2: 'value 2', prop3: 'value 3'},
@@ -117,6 +133,8 @@ describe('lib/command', () => {
   })
 
   test('should handle issuing commands for non-string objects', () => {
+    expect.assertions(2)
+
     command.issueCommand(
       'some-command',
       {
