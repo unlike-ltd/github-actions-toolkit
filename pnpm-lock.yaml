@@ -36,8 +36,8 @@ importers:
         specifier: workspace:*
         version: link:packages/tsconfig
       turbo:
-        specifier: 1.11.2
-        version: 1.11.2
+        specifier: 1.12.0
+        version: 1.12.0
       typescript:
         specifier: 5.3.3
         version: 5.3.3
@@ -82,11 +82,11 @@ importers:
         specifier: 9.1.0
         version: 9.1.0(eslint@8.56.0)
       eslint-config-turbo:
-        specifier: 1.11.2
-        version: 1.11.2(eslint@8.56.0)
+        specifier: 1.12.0
+        version: 1.12.0(eslint@8.56.0)
       eslint-plugin-prettier:
         specifier: 5.1.2
-        version: 5.1.2(@types/eslint@8.56.0)(eslint-config-prettier@9.1.0)(eslint@8.56.0)(prettier@3.1.1)
+        version: 5.1.2(@types/eslint@8.56.0)(eslint-config-prettier@9.1.0)(eslint@8.56.0)(prettier@3.2.4)
       eslint-plugin-unicorn:
         specifier: 50.0.1
         version: 50.0.1(eslint@8.56.0)
@@ -1903,16 +1903,16 @@ packages:
       eslint: 8.56.0
     dev: false
 
-  /eslint-config-turbo@1.11.2(eslint@8.56.0):
-    resolution: {integrity: sha512-vqbyCH6kCHFoIAWUmGL61c0BfUQNz0XAl2RzAnEkSQ+PLXvEvuV2HsvL51UOzyyElfJlzZuh9T4BvUqb5KR9Eg==}
+  /eslint-config-turbo@1.12.0(eslint@8.56.0):
+    resolution: {integrity: sha512-0rtWiBlkNiQtADHE2/r221pfOzABtbfE12KgmcwDhNCnUnuCrVmprlFndbH8VXDl1vmocoZeTQX29R+UCn3tVg==}
     peerDependencies:
       eslint: '>6.6.0'
     dependencies:
       eslint: 8.56.0
-      eslint-plugin-turbo: 1.11.2(eslint@8.56.0)
+      eslint-plugin-turbo: 1.12.0(eslint@8.56.0)
     dev: false
 
-  /eslint-plugin-prettier@5.1.2(@types/eslint@8.56.0)(eslint-config-prettier@9.1.0)(eslint@8.56.0)(prettier@3.1.1):
+  /eslint-plugin-prettier@5.1.2(@types/eslint@8.56.0)(eslint-config-prettier@9.1.0)(eslint@8.56.0)(prettier@3.2.4):
     resolution: {integrity: sha512-dhlpWc9vOwohcWmClFcA+HjlvUpuyynYs0Rf+L/P6/0iQE6vlHW9l5bkfzN62/Stm9fbq8ku46qzde76T1xlSg==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
@@ -1929,13 +1929,13 @@ packages:
       '@types/eslint': 8.56.0
       eslint: 8.56.0
       eslint-config-prettier: 9.1.0(eslint@8.56.0)
-      prettier: 3.1.1
+      prettier: 3.2.4
       prettier-linter-helpers: 1.0.0
       synckit: 0.8.8
     dev: false
 
-  /eslint-plugin-turbo@1.11.2(eslint@8.56.0):
-    resolution: {integrity: sha512-U6DX+WvgGFiwEAqtOjm4Ejd9O4jsw8jlFNkQi0ywxbMnbiTie+exF4Z0F/B1ajtjjeZkBkgRnlU+UkoraBN+bw==}
+  /eslint-plugin-turbo@1.12.0(eslint@8.56.0):
+    resolution: {integrity: sha512-OW+uCm47epGVBGk91n6BtPkz6HYVhtzqkK2VoMaM0Z/Mzp1iRVcrq9yNPMsoqNOo+lRMf4ciJ9Fb5SkGAxiWOw==}
     peerDependencies:
       eslint: '>6.6.0'
     dependencies:
@@ -3265,17 +3265,10 @@ packages:
     hasBin: true
     dev: true
 
-  /prettier@3.1.1:
-    resolution: {integrity: sha512-22UbSzg8luF4UuZtzgiUOfcGM8s4tjBv6dJRT7j275NXsy2jb4aJa4NNveul5x4eqlF1wuhuR2RElK71RvmVaw==}
-    engines: {node: '>=14'}
-    hasBin: true
-    dev: false
-
   /prettier@3.2.4:
     resolution: {integrity: sha512-FWu1oLHKCrtpO1ypU6J0SbK2d9Ckwysq6bHj/uaCP26DxrPpppCLQRGVuqAxSTvhF00AcvDRyYrLNW7ocBhFFQ==}
     engines: {node: '>=14'}
     hasBin: true
-    dev: true
 
   /pretty-format@29.7.0:
     resolution: {integrity: sha512-Pdlw/oPxN+aXdmM9R00JVC9WVFoCLTKJvDVLgmJ+qAffBMxsV85l/Lu7sNx4zSzPyoL2euImuEwHhOXdEgNFZQ==}
@@ -3896,64 +3889,64 @@ packages:
     engines: {node: '>=0.6.11 <=0.7.0 || >=0.7.3'}
     dev: false
 
-  /turbo-darwin-64@1.11.2:
-    resolution: {integrity: sha512-toFmRG/adriZY3hOps7nYCfqHAS+Ci6xqgX3fbo82kkLpC6OBzcXnleSwuPqjHVAaRNhVoB83L5njcE9Qwi2og==}
+  /turbo-darwin-64@1.12.0:
+    resolution: {integrity: sha512-z3zZPFQAPO+vBks7Ybir33ovaJP8U/Ikr/NMGsewHsL5SjetHsd9ZAs6G1zBbAgWXcy7COpgWZbQF0Giq/6hJA==}
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-darwin-arm64@1.11.2:
-    resolution: {integrity: sha512-FCsEDZ8BUSFYEOSC3rrARQrj7x2VOrmVcfrMUIhexTxproRh4QyMxLfr6LALk4ymx6jbDCxWa6Szal8ckldFbA==}
+  /turbo-darwin-arm64@1.12.0:
+    resolution: {integrity: sha512-vVDDjw7rjVHB+S/CrHiDoAMXWsqjG7mVCCXWvL8AhDhTT1u4a3KS2dWsqUFprbzC1X4cHnzmGktXfAo8ro5Mng==}
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-linux-64@1.11.2:
-    resolution: {integrity: sha512-Vzda/o/QyEske5CxLf0wcu7UUS+7zB90GgHZV4tyN+WZtoouTvbwuvZ3V6b5Wgd3OJ/JwWR0CXDK7Sf4VEMr7A==}
+  /turbo-linux-64@1.12.0:
+    resolution: {integrity: sha512-CQMr/B9T1d5JCOgCQk/EX3oUzlNlgUdMaH1is7eU8lBz+NIc1vbC9bunNwgFcM+WsjZORk4ffvYjKx49VtmOkQ==}
     cpu: [x64]
     os: [linux]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-linux-arm64@1.11.2:
-    resolution: {integrity: sha512-bRLwovQRz0yxDZrM4tQEAYV0fBHEaTzUF0JZ8RG1UmZt/CqtpnUrJpYb1VK8hj1z46z9YehARpYCwQ2K0qU4yw==}
+  /turbo-linux-arm64@1.12.0:
+    resolution: {integrity: sha512-sDHezEXcZjZ+aRIN5gzCH0qQjfSnHvnmN5Rr/V+TAk+SeyALh7uRcUxzTrWcl85sK4qDLna9o7bkllgtXXy8LA==}
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-windows-64@1.11.2:
-    resolution: {integrity: sha512-LgTWqkHAKgyVuLYcEPxZVGPInTjjeCnN5KQMdJ4uQZ+xMDROvMFS2rM93iQl4ieDJgidwHCxxCxaU9u8c3d/Kg==}
+  /turbo-windows-64@1.12.0:
+    resolution: {integrity: sha512-yPkL+mRmG22q5V1qRWJkt/U/qK3dYUUiw4aHrmaNm9+5vzDxcZo2Ft60AZsyrl2HMFI6aHBZOjCct/a2Jmc14g==}
     cpu: [x64]
     os: [win32]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-windows-arm64@1.11.2:
-    resolution: {integrity: sha512-829aVBU7IX0c/B4G7g1VI8KniAGutHhIupkYMgF6xPkYVev2G3MYe6DMS/vsLt9GGM9ulDtdWxWrH5P2ngK8IQ==}
+  /turbo-windows-arm64@1.12.0:
+    resolution: {integrity: sha512-v0O71TaAja9l3W7DEnHRhehUatgNfu4B24QNBEkHyR6B0w8pxNB1Vorv9auubXMcZzP/nhwtsQTM6U2ZINAd6A==}
     cpu: [arm64]
     os: [win32]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo@1.11.2:
-    resolution: {integrity: sha512-jPC7LVQJzebs5gWf8FmEvsvXGNyKbN+O9qpvv98xpNaM59aS0/Irhd0H0KbcqnXfsz7ETlzOC3R+xFWthC4Z8A==}
+  /turbo@1.12.0:
+    resolution: {integrity: sha512-gOrh05sU7Njws7MMklBH71TZNx0LLGD+sjp+o4d/m4cngQ6r9/l7/+fZichXd4suh8Id700p9aTMiF80uh69Xg==}
     hasBin: true
     optionalDependencies:
-      turbo-darwin-64: 1.11.2
-      turbo-darwin-arm64: 1.11.2
-      turbo-linux-64: 1.11.2
-      turbo-linux-arm64: 1.11.2
-      turbo-windows-64: 1.11.2
-      turbo-windows-arm64: 1.11.2
+      turbo-darwin-64: 1.12.0
+      turbo-darwin-arm64: 1.12.0
+      turbo-linux-64: 1.12.0
+      turbo-linux-arm64: 1.12.0
+      turbo-windows-64: 1.12.0
+      turbo-windows-arm64: 1.12.0
     dev: true
 
   /type-check@0.4.0:
