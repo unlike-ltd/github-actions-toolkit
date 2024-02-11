@@ -9,8 +9,8 @@ importers:
   .:
     devDependencies:
       '@arethetypeswrong/cli':
-        specifier: ^0.13.5
-        version: 0.13.5
+        specifier: ^0.13.8
+        version: 0.13.8
       '@changesets/changelog-github':
         specifier: ^0.5.0
         version: 0.5.0
@@ -86,7 +86,7 @@ importers:
         version: 1.11.2(eslint@8.56.0)
       eslint-plugin-prettier:
         specifier: 5.1.2
-        version: 5.1.2(@types/eslint@8.56.0)(eslint-config-prettier@9.1.0)(eslint@8.56.0)(prettier@3.1.1)
+        version: 5.1.2(@types/eslint@8.56.0)(eslint-config-prettier@9.1.0)(eslint@8.56.0)(prettier@3.2.5)
       eslint-plugin-unicorn:
         specifier: 50.0.1
         version: 50.0.1(eslint@8.56.0)
@@ -132,27 +132,27 @@ packages:
     resolution: {integrity: sha512-Jh15/qVmrLGhkKJBdXlK1+9tY4lZruYjsgkDFj08ZmDiWVBLJcqkok7Z0/R0In+i1rScBpJlSvrTS2Lm41Pbnw==}
     dev: true
 
-  /@arethetypeswrong/cli@0.13.5:
-    resolution: {integrity: sha512-S5vPcInsCwt6QJlPi1CxxkVfemVrapeeySv5a1jeodwUzfkG/rLjZTYd1uhwgqDMCgQK4sR8z+W9GZITdqLIew==}
+  /@arethetypeswrong/cli@0.13.8:
+    resolution: {integrity: sha512-tQCXVBLuSfFlXdQLl17ZlBuHB1zo03H7uTLDFumoOl/dibXw1osYJ+Fd9Oju34buFDzI1DuFS2vba/Bsk95E5Q==}
     engines: {node: '>=18'}
     hasBin: true
     dependencies:
-      '@arethetypeswrong/core': 0.13.5
+      '@arethetypeswrong/core': 0.13.6
       chalk: 4.1.2
       cli-table3: 0.6.3
       commander: 10.0.1
       marked: 9.1.6
       marked-terminal: 6.2.0(marked@9.1.6)
-      semver: 7.5.4
+      semver: 7.6.0
     dev: true
 
-  /@arethetypeswrong/core@0.13.5:
-    resolution: {integrity: sha512-Ahk+vBUK9RBBx4zle2Y1imrbl68GCtLEl0/UBxsJeDd2j5HkbWcgGtgE2tEPMy4qAgWxj2JEptDPl6Jucbov2w==}
+  /@arethetypeswrong/core@0.13.6:
+    resolution: {integrity: sha512-e3CHQUK1aIIk8VOUavXPu3aVie3ZpxSGQHQoeBabzy81T4xWfQDrc68CqFmfGIEr8Apug47Yq+pYkCG2lsS10w==}
     engines: {node: '>=18'}
     dependencies:
       '@andrewbranch/untar.js': 1.0.3
       fflate: 0.7.4
-      semver: 7.5.4
+      semver: 7.6.0
       ts-expose-internals-conditionally: 1.0.0-empty.0
       typescript: 5.3.3
       validate-npm-package-name: 5.0.0
@@ -1418,7 +1418,7 @@ packages:
   /builtins@5.0.1:
     resolution: {integrity: sha512-qwVpFEHNfhYJIzNRBvd2C1kyo6jz3ZSMPyyuR47OPdiKWlbYnZNyDWuyR175qDnAJLiCo5fBBqPb3RiXgWlkOQ==}
     dependencies:
-      semver: 7.5.4
+      semver: 7.6.0
     dev: true
 
   /bundle-require@4.0.2(esbuild@0.19.11):
@@ -1912,7 +1912,7 @@ packages:
       eslint-plugin-turbo: 1.11.2(eslint@8.56.0)
     dev: false
 
-  /eslint-plugin-prettier@5.1.2(@types/eslint@8.56.0)(eslint-config-prettier@9.1.0)(eslint@8.56.0)(prettier@3.1.1):
+  /eslint-plugin-prettier@5.1.2(@types/eslint@8.56.0)(eslint-config-prettier@9.1.0)(eslint@8.56.0)(prettier@3.2.5):
     resolution: {integrity: sha512-dhlpWc9vOwohcWmClFcA+HjlvUpuyynYs0Rf+L/P6/0iQE6vlHW9l5bkfzN62/Stm9fbq8ku46qzde76T1xlSg==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
@@ -1929,7 +1929,7 @@ packages:
       '@types/eslint': 8.56.0
       eslint: 8.56.0
       eslint-config-prettier: 9.1.0(eslint@8.56.0)
-      prettier: 3.1.1
+      prettier: 3.2.5
       prettier-linter-helpers: 1.0.0
       synckit: 0.8.8
     dev: false
@@ -3265,17 +3265,17 @@ packages:
     hasBin: true
     dev: true
 
-  /prettier@3.1.1:
-    resolution: {integrity: sha512-22UbSzg8luF4UuZtzgiUOfcGM8s4tjBv6dJRT7j275NXsy2jb4aJa4NNveul5x4eqlF1wuhuR2RElK71RvmVaw==}
-    engines: {node: '>=14'}
-    hasBin: true
-    dev: false
-
   /prettier@3.2.4:
     resolution: {integrity: sha512-FWu1oLHKCrtpO1ypU6J0SbK2d9Ckwysq6bHj/uaCP26DxrPpppCLQRGVuqAxSTvhF00AcvDRyYrLNW7ocBhFFQ==}
     engines: {node: '>=14'}
     hasBin: true
     dev: true
+
+  /prettier@3.2.5:
+    resolution: {integrity: sha512-3/GWa9aOC0YeD7LUfvOG2NiDyhOWRvt1k+rcKhOuYnMY24iiCphgneUfJDyFXd6rZCAnuLBv6UeAULtrhT/F4A==}
+    engines: {node: '>=14'}
+    hasBin: true
+    dev: false
 
   /pretty-format@29.7.0:
     resolution: {integrity: sha512-Pdlw/oPxN+aXdmM9R00JVC9WVFoCLTKJvDVLgmJ+qAffBMxsV85l/Lu7sNx4zSzPyoL2euImuEwHhOXdEgNFZQ==}
@@ -3475,6 +3475,14 @@ packages:
     hasBin: true
     dependencies:
       lru-cache: 6.0.0
+
+  /semver@7.6.0:
+    resolution: {integrity: sha512-EnwXhrlwXMk9gKu5/flx5sv/an57AkRplG3hTK68W7FRDN+k+OWBj65M7719OkA82XLBxrcX0KSHj+X5COhOVg==}
+    engines: {node: '>=10'}
+    hasBin: true
+    dependencies:
+      lru-cache: 6.0.0
+    dev: true
 
   /set-blocking@2.0.0:
     resolution: {integrity: sha512-KiKBS8AnWGEyLzofFfmvKwpdPzqiy16LvQfK3yv/fVH7Bj13/wl3JSR1J+rfgRE9q7xUJK4qvgS8raSOeLUehw==}
