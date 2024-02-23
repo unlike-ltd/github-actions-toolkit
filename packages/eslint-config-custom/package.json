@@ -17,7 +17,7 @@
     "eslint-plugin-vitest": "0.3.22"
   },
   "devDependencies": {
-    "@types/eslint": "8.56.2"
+    "@types/eslint": "8.56.3"
   },
   "peerDependencies": {
     "eslint": "^8.42.0"
