@@ -71,7 +71,7 @@ For example, if you mask the letter `l`, running `echo "Hello FOO BAR World"` wi
 Emitting a group with a title will instruct the logs to create a collapsible region up to the next endgroup command.
 
 ```bash
-echo "::group::my title"   
+echo "::group::my title"
 echo "::endgroup::"
 ```
 
@@ -87,7 +87,7 @@ function endGroup(): void {}
 Problems matchers can be used to scan a build's output to automatically surface lines to the user that matches the provided pattern. A file path to a .json Problem Matcher must be provided. See [Problem Matchers](problem-matchers.md) for more information on how to define a Problem Matcher.
 
 ```bash
-echo "::add-matcher::eslint-compact-problem-matcher.json"   
+echo "::add-matcher::eslint-compact-problem-matcher.json"
 echo "::remove-matcher owner=eslint-compact::"
 ```
 
@@ -108,12 +108,12 @@ Because `save-state` prepends the string `STATE_` to the name, the environment v
 
 There are several commands to emit different levels of log output:
 
-| log level | example usage |
-|---|---|
-| [debug](action-debugging.md)  | `echo "::debug::My debug message"` |
-| notice | `echo "::notice::My notice message"` |
-| warning | `echo "::warning::My warning message"` |
-| error | `echo "::error::My error message"` |
+| log level                    | example usage                          |
+| ---------------------------- | -------------------------------------- |
+| [debug](action-debugging.md) | `echo "::debug::My debug message"`     |
+| notice                       | `echo "::notice::My notice message"`   |
+| warning                      | `echo "::warning::My warning message"` |
+| error                        | `echo "::error::My error message"`     |
 
 Additional syntax options are described at [the workflow command documentation](https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-a-debug-message).
 
