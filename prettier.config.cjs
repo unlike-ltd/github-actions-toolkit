@@ -7,7 +7,10 @@ const config = {
   trailingComma: 'none',
   bracketSpacing: false,
   arrowParens: 'avoid',
-  plugins: [require.resolve('@ianvs/prettier-plugin-sort-imports')],
+  plugins: [
+    require.resolve('@ianvs/prettier-plugin-sort-imports'),
+    require.resolve('prettier-plugin-packagejson')
+  ],
   importOrder: [
     '',
     '<TYPES>',
@@ -23,7 +26,7 @@ const config = {
     '@/(.*)$',
     '^[./]'
   ],
-  importOrderTypeScriptVersion: '5.1.3'
+  importOrderTypeScriptVersion: '5.3.3'
 }
 
 module.exports = config
