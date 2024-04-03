@@ -52,6 +52,7 @@ const config = {
     }
   ],
   rules: {
+    '@typescript-eslint/consistent-type-imports': 'error',
     'unicorn/prevent-abbreviations': 'off',
     'no-prototype-builtins': 'off'
   }
