@@ -631,11 +631,11 @@ export class HttpClient {
     return lowercaseKeys(headers || {})
   }
 
-  private _getExistingOrDefaultHeader(
+  private _getExistingOrDefaultHeader<T extends Headers>(
     additionalHeaders: http.OutgoingHttpHeaders,
-    header: string,
+    header: T,
     _default: string
-  ): string | number | string[] {
+  ): http.OutgoingHttpHeaders[T] {
     let clientHeader: string | undefined
     if (this.requestOptions && this.requestOptions.headers) {
       clientHeader = lowercaseKeys(this.requestOptions.headers)[header]
@@ -713,7 +713,7 @@ export class HttpClient {
   }
 
   private _getProxyAgentDispatcher(parsedUrl: URL, proxyUrl: URL): ProxyAgent {
-    let proxyAgent
+    let proxyAgent: any
 
     if (this._keepAlive) {
       proxyAgent = this._proxyAgentDispatcher
@@ -772,7 +772,7 @@ export class HttpClient {
 
       // get the result from the body
 
-      function dateTimeDeserializer(key: any, value: any): any {
+      function dateTimeDeserializer(_key: any, value: any): any {
         if (typeof value === 'string') {
           const a = new Date(value)
           if (!isNaN(a.valueOf())) {
