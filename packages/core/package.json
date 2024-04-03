@@ -33,7 +33,7 @@
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "dependencies": {
-    "@actions/http-client": "^2.2.0"
+    "@unlike/github-actions-http-client": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "20.11.17",

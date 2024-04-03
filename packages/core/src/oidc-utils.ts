@@ -1,7 +1,9 @@
-import type {RequestOptions} from '@actions/http-client/lib/interfaces.js'
+import type {RequestOptions} from '@unlike/github-actions-http-client'
 
-import {HttpClient} from '@actions/http-client'
-import {BearerCredentialHandler} from '@actions/http-client/lib/auth.js'
+import {
+  BearerCredentialHandler,
+  HttpClient
+} from '@unlike/github-actions-http-client'
 
 import {debug} from './logging.js'
 import {setSecret} from './variables.js'
