@@ -94,7 +94,7 @@ Finally, this library provides some utilities for logging. Note that debug loggi
 ```js
 import * as core from '@unlike/github-actions-core'
 
-const myInput = getInput('input')
+const myInput = core.getInput('input')
 try {
   core.debug('Inside try block')
 
