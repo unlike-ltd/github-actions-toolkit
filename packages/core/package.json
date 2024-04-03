@@ -8,9 +8,17 @@
     "core"
   ],
   "homepage": "https://github.com/unlike-ltd/github-actions-toolkit/tree/main/packages/core",
+  "bugs": {
+    "url": "https://github.com/unlike-ltd/github-actions-toolkit/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/unlike-ltd/github-actions-toolkit.git",
+    "directory": "packages/core"
+  },
   "license": "MIT",
-  "type": "module",
   "sideEffects": false,
+  "type": "module",
   "exports": {
     "types": "./dist/index.d.ts",
     "import": "./dist/index.js"
@@ -18,25 +26,11 @@
   "files": [
     "dist"
   ],
-  "publishConfig": {
-    "access": "public"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/unlike-ltd/github-actions-toolkit.git",
-    "directory": "packages/core"
-  },
   "scripts": {
     "build": "rm -rf dist && tsup-node",
     "clean": "rm -rf .turbo node_modules dist",
     "lint": "tsc --noEmit",
     "test": "echo \"Error: run tests from root\" && exit 1"
-  },
-  "bugs": {
-    "url": "https://github.com/unlike-ltd/github-actions-toolkit/issues"
-  },
-  "engines": {
-    "node": ">=20.10.0"
   },
   "dependencies": {
     "@actions/http-client": "^2.2.0"
@@ -47,5 +41,11 @@
     "tsconfig": "workspace:*",
     "tsup": "8.0.2",
     "typescript": "5.3.3"
+  },
+  "engines": {
+    "node": ">=20.10.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
