@@ -20,9 +20,8 @@ export function getProxyUrl(reqUrl: URL): URL | undefined {
       if (!proxyVar.startsWith('http://') && !proxyVar.startsWith('https://'))
         return new URL(`http://${proxyVar}`)
     }
-  } else {
-    return undefined
   }
+  return undefined
 }
 
 export function checkBypass(reqUrl: URL): boolean {
