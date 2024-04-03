@@ -13,6 +13,7 @@
     "lint:ls": "DEBUG=eslint:cli-engine pnpm run lint",
     "release": "turbo run build && changeset publish",
     "test": "vitest run",
+    "test:ci": "vitest run --reporter=github-actions",
     "test:watch": "vitest",
     "version-packages": "changeset version"
   },
