@@ -1,7 +1,7 @@
-import type {HttpClientResponse} from './index.js'
+import type http from 'node:http'
+import type https from 'node:https'
 
-import * as http from 'node:http'
-import * as https from 'node:https'
+import type {HttpClientResponse} from './client-response.js'
 
 export interface HttpClient {
   options(

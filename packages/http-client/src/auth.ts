@@ -1,9 +1,9 @@
-import * as http from 'node:http'
+import type {RequestOptions} from 'node:http'
 
-import {HttpClientResponse} from './index.js'
-import * as ifm from './interfaces.js'
+import type {HttpClientResponse} from './client-response.js'
+import type {RequestHandler} from './interfaces.js'
 
-export class BasicCredentialHandler implements ifm.RequestHandler {
+export class BasicCredentialHandler implements RequestHandler {
   username: string
   password: string
 
@@ -12,7 +12,7 @@ export class BasicCredentialHandler implements ifm.RequestHandler {
     this.password = password
   }
 
-  prepareRequest(options: http.RequestOptions): void {
+  prepareRequest(options: RequestOptions): void {
     if (!options.headers) {
       throw Error('The request has no headers')
     }
@@ -31,7 +31,7 @@ export class BasicCredentialHandler implements ifm.RequestHandler {
   }
 }
 
-export class BearerCredentialHandler implements ifm.RequestHandler {
+export class BearerCredentialHandler implements RequestHandler {
   token: string
 
   constructor(token: string) {
@@ -40,7 +40,7 @@ export class BearerCredentialHandler implements ifm.RequestHandler {
 
   // currently implements pre-authorization
   // TODO: support preAuth = false where it hooks on 401
-  prepareRequest(options: http.RequestOptions): void {
+  prepareRequest(options: RequestOptions): void {
     if (!options.headers) {
       throw Error('The request has no headers')
     }
@@ -57,9 +57,7 @@ export class BearerCredentialHandler implements ifm.RequestHandler {
   }
 }
 
-export class PersonalAccessTokenCredentialHandler
-  implements ifm.RequestHandler
-{
+export class PersonalAccessTokenCredentialHandler implements RequestHandler {
   token: string
 
   constructor(token: string) {
@@ -68,7 +66,7 @@ export class PersonalAccessTokenCredentialHandler
 
   // currently implements pre-authorization
   // TODO: support preAuth = false where it hooks on 401
-  prepareRequest(options: http.RequestOptions): void {
+  prepareRequest(options: RequestOptions): void {
     if (!options.headers) {
       throw Error('The request has no headers')
     }
