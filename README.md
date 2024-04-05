@@ -15,3 +15,13 @@ Provides functions for inputs, outputs, results, logging, secrets and variables.
 ```bash
 $ npm install @unlike/github-actions-core
 ```
+
+:phone: [@unlike/github-actions-http-client](packages/http-client)
+
+A lightweight HTTP client optimized for building actions. Read more [here](packages/http-client)
+
+```bash
+$ npm install @unlike/github-actions-http-client
+```
+
+<br/>
