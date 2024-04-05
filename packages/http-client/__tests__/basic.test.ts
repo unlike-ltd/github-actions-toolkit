@@ -1,12 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable vitest/prefer-expect-assertions */
 
-import * as fs from 'node:fs'
-import * as path from 'node:path'
+import type {HttpClientResponse} from '../src/client-response.js'
+
+import fs from 'node:fs'
+import path from 'node:path'
 
 import {beforeEach, describe, expect, test} from 'vitest'
 
-import * as httpm from '../dist/index.js'
+import {Headers, HttpClient, MediaTypes} from '../src/client.js'
 
 const sampleFilePath: string = path.join(import.meta.dirname, 'testoutput.txt')
 
@@ -19,14 +21,14 @@ interface HttpBinData {
 }
 
 describe('basics', () => {
-  let _http: httpm.HttpClient
+  let _http: HttpClient
 
   beforeEach(() => {
-    _http = new httpm.HttpClient('http-client-tests')
+    _http = new HttpClient('http-client-tests')
   })
 
   test('constructs', () => {
-    const http: httpm.HttpClient = new httpm.HttpClient('thttp-client-tests')
+    const http: HttpClient = new HttpClient('thttp-client-tests')
     expect(http).toBeDefined()
   })
 
@@ -43,7 +45,7 @@ describe('basics', () => {
   //  }
 
   test('does basic http get request', async () => {
-    const res: httpm.HttpClientResponse = await _http.get(
+    const res: HttpClientResponse = await _http.get(
       'http://postman-echo.com/get'
     )
     expect(res.message.statusCode).toBe(200)
@@ -54,8 +56,8 @@ describe('basics', () => {
   })
 
   test('does basic http get request with no user agent', async () => {
-    const http: httpm.HttpClient = new httpm.HttpClient()
-    const res: httpm.HttpClientResponse = await http.get(
+    const http: HttpClient = new HttpClient()
+    const res: HttpClientResponse = await http.get(
       'http://postman-echo.com/get'
     )
     expect(res.message.statusCode).toBe(200)
@@ -66,7 +68,7 @@ describe('basics', () => {
   })
 
   test('does basic https get request', async () => {
-    const res: httpm.HttpClientResponse = await _http.get(
+    const res: HttpClientResponse = await _http.get(
       'https://postman-echo.com/get'
     )
     expect(res.message.statusCode).toBe(200)
@@ -76,17 +78,13 @@ describe('basics', () => {
   })
 
   test('does basic http get request with default headers', async () => {
-    const http: httpm.HttpClient = new httpm.HttpClient(
-      'http-client-tests',
-      [],
-      {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        }
+    const http: HttpClient = new HttpClient('http-client-tests', [], {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
       }
-    )
-    const res: httpm.HttpClientResponse = await http.get(
+    })
+    const res: HttpClientResponse = await http.get(
       'http://postman-echo.com/get'
     )
     expect(res.message.statusCode).toBe(200)
@@ -98,17 +96,13 @@ describe('basics', () => {
   })
 
   test('does basic http get request with merged headers', async () => {
-    const http: httpm.HttpClient = new httpm.HttpClient(
-      'http-client-tests',
-      [],
-      {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        }
+    const http: HttpClient = new HttpClient('http-client-tests', [], {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
       }
-    )
-    const res: httpm.HttpClientResponse = await http.get(
+    })
+    const res: HttpClientResponse = await http.get(
       'http://postman-echo.com/get',
       {
         'content-type': 'application/x-www-form-urlencoded'
@@ -141,7 +135,7 @@ describe('basics', () => {
   })
 
   test('does basic get request with redirects', async () => {
-    const res: httpm.HttpClientResponse = await _http.get(
+    const res: HttpClientResponse = await _http.get(
       `https://postman-echo.com/redirect-to?url=${encodeURIComponent(
         'https://postman-echo.com/get'
       )}`
@@ -153,7 +147,7 @@ describe('basics', () => {
   })
 
   test('does basic get request with redirects (303)', async () => {
-    const res: httpm.HttpClientResponse = await _http.get(
+    const res: HttpClientResponse = await _http.get(
       `https://postman-echo.com/redirect-to?url=${encodeURIComponent(
         'https://postman-echo.com/get'
       )}&status_code=303`
@@ -165,7 +159,7 @@ describe('basics', () => {
   })
 
   test('returns 404 for not found get request on redirect', async () => {
-    const res: httpm.HttpClientResponse = await _http.get(
+    const res: HttpClientResponse = await _http.get(
       `https://postman-echo.com/redirect-to?url=${encodeURIComponent(
         'https://postman-echo.com/status/404'
       )}&status_code=303`
@@ -175,12 +169,12 @@ describe('basics', () => {
   })
 
   test('does not follow redirects if disabled', async () => {
-    const http: httpm.HttpClient = new httpm.HttpClient(
+    const http: HttpClient = new HttpClient(
       'typed-test-client-tests',
       undefined,
       {allowRedirects: false}
     )
-    const res: httpm.HttpClientResponse = await http.get(
+    const res: HttpClientResponse = await http.get(
       `https://postman-echo.com/redirect-to?url=${encodeURIComponent(
         'https://postman-echo.com/get'
       )}`
@@ -194,7 +188,7 @@ describe('basics', () => {
       accept: 'application/json',
       authorization: 'shhh'
     }
-    const res: httpm.HttpClientResponse = await _http.get(
+    const res: HttpClientResponse = await _http.get(
       `https://postman-echo.com/redirect-to?url=${encodeURIComponent(
         'https://www.postman-echo.com/get'
       )}`,
@@ -205,7 +199,7 @@ describe('basics', () => {
     const body: string = await res.readBody()
     const obj = JSON.parse(body)
     // httpbin "fixes" the casing
-    expect(obj.headers[httpm.Headers.Accept]).toBe('application/json')
+    expect(obj.headers[Headers.Accept]).toBe('application/json')
     expect(obj.headers['Authorization']).toBeUndefined()
     expect(obj.headers['authorization']).toBeUndefined()
     expect(obj.url).toBe('https://www.postman-echo.com/get')
@@ -216,7 +210,7 @@ describe('basics', () => {
       Accept: 'application/json',
       Authorization: 'shhh'
     }
-    const res: httpm.HttpClientResponse = await _http.get(
+    const res: HttpClientResponse = await _http.get(
       `https://postman-echo.com/redirect-to?url=${encodeURIComponent(
         'https://www.postman-echo.com/get'
       )}`,
@@ -227,21 +221,21 @@ describe('basics', () => {
     const body: string = await res.readBody()
     const obj = JSON.parse(body)
     // httpbin "fixes" the casing
-    expect(obj.headers[httpm.Headers.Accept]).toBe('application/json')
+    expect(obj.headers[Headers.Accept]).toBe('application/json')
     expect(obj.headers['Authorization']).toBeUndefined()
     expect(obj.headers['authorization']).toBeUndefined()
     expect(obj.url).toBe('https://www.postman-echo.com/get')
   })
 
   test('does basic head request', async () => {
-    const res: httpm.HttpClientResponse = await _http.head(
+    const res: HttpClientResponse = await _http.head(
       'http://postman-echo.com/get'
     )
     expect(res.message.statusCode).toBe(200)
   })
 
   test('does basic http delete request', async () => {
-    const res: httpm.HttpClientResponse = await _http.del(
+    const res: HttpClientResponse = await _http.del(
       'http://postman-echo.com/delete'
     )
     expect(res.message.statusCode).toBe(200)
@@ -251,7 +245,7 @@ describe('basics', () => {
 
   test('does basic http post request', async () => {
     const b = 'Hello World!'
-    const res: httpm.HttpClientResponse = await _http.post(
+    const res: HttpClientResponse = await _http.post(
       'http://postman-echo.com/post',
       b
     )
@@ -264,7 +258,7 @@ describe('basics', () => {
 
   test('does basic http patch request', async () => {
     const b = 'Hello World!'
-    const res: httpm.HttpClientResponse = await _http.patch(
+    const res: HttpClientResponse = await _http.patch(
       'http://postman-echo.com/patch',
       b
     )
@@ -276,7 +270,7 @@ describe('basics', () => {
   })
 
   test('does basic http options request', async () => {
-    const res: httpm.HttpClientResponse = await _http.options(
+    const res: HttpClientResponse = await _http.options(
       'http://postman-echo.com'
     )
     expect(res.message.statusCode).toBe(200)
@@ -284,7 +278,7 @@ describe('basics', () => {
   })
 
   test('returns 404 for not found get request', async () => {
-    const res: httpm.HttpClientResponse = await _http.get(
+    const res: HttpClientResponse = await _http.get(
       'http://postman-echo.com/status/404'
     )
     expect(res.message.statusCode).toBe(404)
@@ -298,11 +292,11 @@ describe('basics', () => {
     expect(jsonObj.statusCode).toBe(200)
     expect(jsonObj.result).toBeDefined()
     expect(jsonObj.result?.url).toBe('https://postman-echo.com/get')
-    expect(jsonObj.result?.headers[httpm.Headers.Accept]).toBe(
-      httpm.MediaTypes.ApplicationJson
+    expect(jsonObj.result?.headers[Headers.Accept]).toBe(
+      MediaTypes.ApplicationJson
     )
     expect(jsonObj.headers['content-type']).toContain(
-      httpm.MediaTypes.ApplicationJson
+      MediaTypes.ApplicationJson
     )
   })
 
@@ -324,14 +318,14 @@ describe('basics', () => {
     expect(restRes.result).toBeDefined()
     expect(restRes.result?.url).toBe('https://postman-echo.com/post')
     expect(restRes.result?.json.name).toBe('foo')
-    expect(restRes.result?.headers[httpm.Headers.Accept]).toBe(
-      httpm.MediaTypes.ApplicationJson
+    expect(restRes.result?.headers[Headers.Accept]).toBe(
+      MediaTypes.ApplicationJson
     )
     expect(restRes.result?.headers['content-type']).toBe(
-      httpm.MediaTypes.ApplicationJson
+      MediaTypes.ApplicationJson
     )
     expect(restRes.headers['content-type']).toContain(
-      httpm.MediaTypes.ApplicationJson
+      MediaTypes.ApplicationJson
     )
   })
 
@@ -346,14 +340,14 @@ describe('basics', () => {
     expect(restRes.result?.url).toBe('https://postman-echo.com/put')
     expect(restRes.result?.json.name).toBe('foo')
 
-    expect(restRes.result?.headers[httpm.Headers.Accept]).toBe(
-      httpm.MediaTypes.ApplicationJson
+    expect(restRes.result?.headers[Headers.Accept]).toBe(
+      MediaTypes.ApplicationJson
     )
     expect(restRes.result?.headers['content-type']).toBe(
-      httpm.MediaTypes.ApplicationJson
+      MediaTypes.ApplicationJson
     )
     expect(restRes.headers['content-type']).toContain(
-      httpm.MediaTypes.ApplicationJson
+      MediaTypes.ApplicationJson
     )
   })
 
@@ -367,14 +361,14 @@ describe('basics', () => {
     expect(restRes.result).toBeDefined()
     expect(restRes.result?.url).toBe('https://postman-echo.com/patch')
     expect(restRes.result?.json.name).toBe('foo')
-    expect(restRes.result?.headers[httpm.Headers.Accept]).toBe(
-      httpm.MediaTypes.ApplicationJson
+    expect(restRes.result?.headers[Headers.Accept]).toBe(
+      MediaTypes.ApplicationJson
     )
     expect(restRes.result?.headers['content-type']).toBe(
-      httpm.MediaTypes.ApplicationJson
+      MediaTypes.ApplicationJson
     )
     expect(restRes.headers['content-type']).toContain(
-      httpm.MediaTypes.ApplicationJson
+      MediaTypes.ApplicationJson
     )
   })
 })

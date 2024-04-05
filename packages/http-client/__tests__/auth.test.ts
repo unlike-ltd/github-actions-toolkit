@@ -1,20 +1,24 @@
 /* eslint-disable vitest/prefer-expect-assertions */
 
+import type {HttpClientResponse} from '../src/client-response.js'
+
 import {describe, expect, test} from 'vitest'
 
-import * as am from '../dist/auth.js'
-import * as httpm from '../dist/index.js'
+import {
+  BasicCredentialHandler,
+  BearerCredentialHandler,
+  PersonalAccessTokenCredentialHandler
+} from '../src/auth.js'
+import {HttpClient} from '../src/client.js'
 
 describe('auth', () => {
   test('does basic http get request with basic auth', async () => {
-    const bh: am.BasicCredentialHandler = new am.BasicCredentialHandler(
+    const bh: BasicCredentialHandler = new BasicCredentialHandler(
       'johndoe',
       'password'
     )
-    const http: httpm.HttpClient = new httpm.HttpClient('http-client-tests', [
-      bh
-    ])
-    const res: httpm.HttpClientResponse = await http.get(
+    const http: HttpClient = new HttpClient('http-client-tests', [bh])
+    const res: HttpClientResponse = await http.get(
       'http://postman-echo.com/get'
     )
     expect(res.message.statusCode).toBe(200)
@@ -31,13 +35,11 @@ describe('auth', () => {
 
   test('does basic http get request with pat token auth', async () => {
     const token = 'scbfb44vxzku5l4xgc3qfazn3lpk4awflfryc76esaiq7aypcbhs'
-    const ph: am.PersonalAccessTokenCredentialHandler =
-      new am.PersonalAccessTokenCredentialHandler(token)
+    const ph: PersonalAccessTokenCredentialHandler =
+      new PersonalAccessTokenCredentialHandler(token)
 
-    const http: httpm.HttpClient = new httpm.HttpClient('http-client-tests', [
-      ph
-    ])
-    const res: httpm.HttpClientResponse = await http.get(
+    const http: HttpClient = new HttpClient('http-client-tests', [ph])
+    const res: HttpClientResponse = await http.get(
       'http://postman-echo.com/get'
     )
     expect(res.message.statusCode).toBe(200)
@@ -54,12 +56,10 @@ describe('auth', () => {
 
   test('does basic http get request with pat token auth', async () => {
     const token = 'scbfb44vxzku5l4xgc3qfazn3lpk4awflfryc76esaiq7aypcbhs'
-    const ph: am.BearerCredentialHandler = new am.BearerCredentialHandler(token)
+    const ph: BearerCredentialHandler = new BearerCredentialHandler(token)
 
-    const http: httpm.HttpClient = new httpm.HttpClient('http-client-tests', [
-      ph
-    ])
-    const res: httpm.HttpClientResponse = await http.get(
+    const http: HttpClient = new HttpClient('http-client-tests', [ph])
+    const res: HttpClientResponse = await http.get(
       'http://postman-echo.com/get'
     )
     expect(res.message.statusCode).toBe(200)
