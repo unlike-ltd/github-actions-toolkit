@@ -1,5 +1,20 @@
 # @unlike/github-actions-core
 
+## 1.1.0
+
+### Minor Changes
+
+- [#284](https://github.com/unlike-ltd/github-actions-toolkit/pull/284) [`5401952`](https://github.com/unlike-ltd/github-actions-toolkit/commit/5401952a32c69227884595c992b264d32e8d377b) Thanks [@andykenward](https://github.com/andykenward)! - replace @actions/http-client with @unlike/github-actions-http-client
+
+- [#284](https://github.com/unlike-ltd/github-actions-toolkit/pull/284) [`f6be31e`](https://github.com/unlike-ltd/github-actions-toolkit/commit/f6be31e27bb10b8395013df89f34ca82c53f23e3) Thanks [@andykenward](https://github.com/andykenward)! - release @unlike/github-actions-http-client and use in @unlike/github-actions-core
+
+### Patch Changes
+
+- [`8e0e918`](https://github.com/unlike-ltd/github-actions-toolkit/commit/8e0e91802592589bf077cd2eaa039bc2d4cc3ccc) Thanks [@andykenward](https://github.com/andykenward)! - update esbuild package
+
+- Updated dependencies [[`f6be31e`](https://github.com/unlike-ltd/github-actions-toolkit/commit/f6be31e27bb10b8395013df89f34ca82c53f23e3)]:
+  - @unlike/github-actions-http-client@0.1.0
+
 ## 1.0.0
 
 ### Major Changes
