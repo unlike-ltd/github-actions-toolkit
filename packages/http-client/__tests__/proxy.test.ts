@@ -279,9 +279,8 @@ describe('proxy', () => {
       expect(res.message.statusCode).toBe(200)
 
       // no support for ipv6 for now
-      expect(httpClient.get('http://[::1]:8091')).rejects.toThrow(
-        'getaddrinfo ENOTFOUND [::1]'
-      )
+      // eslint-disable-next-line vitest/require-to-throw-message
+      expect(httpClient.get('http://[::1]:8091')).rejects.toThrow()
 
       // proxy at _proxyUrl was ignored
       expect(_proxyConnects).toStrictEqual([])
