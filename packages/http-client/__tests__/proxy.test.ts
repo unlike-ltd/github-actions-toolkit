@@ -219,7 +219,7 @@ describe('proxy', () => {
     const body: string = await res.readBody()
     const obj = JSON.parse(body)
     expect(obj.url).toBe('http://postman-echo.com/get')
-    expect(_proxyConnects).toEqual(['postman-echo.com:80'])
+    expect(_proxyConnects).toStrictEqual(['postman-echo.com:80'])
   })
 
   test('HttpClient does basic http get request when bypass proxy', async () => {
@@ -246,7 +246,7 @@ describe('proxy', () => {
     const body: string = await res.readBody()
     const obj = JSON.parse(body)
     expect(obj.url).toBe('https://postman-echo.com/get')
-    expect(_proxyConnects).toEqual(['postman-echo.com:443'])
+    expect(_proxyConnects).toStrictEqual(['postman-echo.com:443'])
   })
 
   test('HttpClient does basic https get request when bypass proxy', async () => {
@@ -279,10 +279,12 @@ describe('proxy', () => {
       expect(res.message.statusCode).toBe(200)
 
       // no support for ipv6 for now
-      expect(httpClient.get('http://[::1]:8091')).rejects.toThrow()
+      expect(httpClient.get('http://[::1]:8091')).rejects.toThrow(
+        'getaddrinfo ENOTFOUND [::1]'
+      )
 
       // proxy at _proxyUrl was ignored
-      expect(_proxyConnects).toEqual([])
+      expect(_proxyConnects).toStrictEqual([])
     } finally {
       server.close()
     }
@@ -294,8 +296,8 @@ describe('proxy', () => {
     const agent: any = httpClient.getAgent('https://some-url')
     // console.log(agent)
     expect(agent.proxyOptions.host).toBe('127.0.0.1')
-    expect(agent.proxyOptions.port).toBe('8080')
-    expect(agent.proxyOptions.proxyAuth).toBe(undefined)
+    expect(agent.proxyOptions.port).toBe(8080)
+    expect(agent.proxyOptions.proxyAuth).toBeUndefined()
   })
 
   test('proxyAuth is set in tunnel agent when authentication is provided', async () => {
@@ -305,7 +307,7 @@ describe('proxy', () => {
 
     // console.log(agent)
     expect(agent.proxyOptions.host).toBe('127.0.0.1')
-    expect(agent.proxyOptions.port).toBe('8080')
+    expect(agent.proxyOptions.port).toBe(8080)
     expect(agent.proxyOptions.proxyAuth).toBe('user:password')
   })
 

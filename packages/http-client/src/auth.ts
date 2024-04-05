@@ -14,7 +14,7 @@ export class BasicCredentialHandler implements RequestHandler {
 
   prepareRequest(options: RequestOptions): void {
     if (!options.headers) {
-      throw Error('The request has no headers')
+      throw new Error('The request has no headers')
     }
     options.headers['Authorization'] = `Basic ${Buffer.from(
       `${this.username}:${this.password}`
@@ -42,7 +42,7 @@ export class BearerCredentialHandler implements RequestHandler {
   // TODO: support preAuth = false where it hooks on 401
   prepareRequest(options: RequestOptions): void {
     if (!options.headers) {
-      throw Error('The request has no headers')
+      throw new Error('The request has no headers')
     }
     options.headers['Authorization'] = `Bearer ${this.token}`
   }
@@ -68,7 +68,7 @@ export class PersonalAccessTokenCredentialHandler implements RequestHandler {
   // TODO: support preAuth = false where it hooks on 401
   prepareRequest(options: RequestOptions): void {
     if (!options.headers) {
-      throw Error('The request has no headers')
+      throw new Error('The request has no headers')
     }
     options.headers['Authorization'] = `Basic ${Buffer.from(
       `PAT:${this.token}`

@@ -26,7 +26,7 @@ describe('auth', () => {
     const obj = JSON.parse(body)
     const auth: string = obj.headers.authorization
     const creds: string = Buffer.from(
-      auth.substring('Basic '.length),
+      auth.slice('Basic '.length),
       'base64'
     ).toString()
     expect(creds).toBe('johndoe:password')
@@ -47,7 +47,7 @@ describe('auth', () => {
     const obj = JSON.parse(body)
     const auth: string = obj.headers.authorization
     const creds: string = Buffer.from(
-      auth.substring('Basic '.length),
+      auth.slice('Basic '.length),
       'base64'
     ).toString()
     expect(creds).toBe(`PAT:${token}`)
