@@ -1,4 +1,4 @@
-import {sep} from 'node:path'
+import path from 'node:path'
 
 /**
  * toPosixPath converts the given path to the posix form. On Windows, \\ will be
@@ -31,5 +31,5 @@ export const toWin32Path = (pth: string): string => {
  * @return string The platform-specific path.
  */
 export const toPlatformPath = (pth: string): string => {
-  return pth.replaceAll(/[/\\]/g, sep)
+  return pth.replaceAll(/[/\\]/g, path.sep)
 }
