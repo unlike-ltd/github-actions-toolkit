@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/no-null */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import type {
@@ -71,19 +72,24 @@ export function getProxyUrl(serverUrl: string): string {
   return proxyUrl ? proxyUrl.href : ''
 }
 
-const HttpRedirectCodes: number[] = [
+const HttpRedirectCodes: Set<HttpCodes> = new Set([
   HttpCodes.MovedPermanently,
   HttpCodes.ResourceMoved,
   HttpCodes.SeeOther,
   HttpCodes.TemporaryRedirect,
   HttpCodes.PermanentRedirect
-]
-const HttpResponseRetryCodes: number[] = [
+])
+const HttpResponseRetryCodes: Set<HttpCodes> = new Set([
   HttpCodes.BadGateway,
   HttpCodes.ServiceUnavailable,
   HttpCodes.GatewayTimeout
-]
-const RetryableHttpVerbs: string[] = ['OPTIONS', 'GET', 'DELETE', 'HEAD']
+])
+const RetryableHttpVerbs: Set<string> = new Set([
+  'OPTIONS',
+  'GET',
+  'DELETE',
+  'HEAD'
+])
 const ExponentialBackoffCeiling = 10
 const ExponentialBackoffTimeSlice = 5
 
@@ -131,33 +137,33 @@ export class HttpClient {
     this.handlers = handlers || []
     this.requestOptions = requestOptions
     if (requestOptions) {
-      if (requestOptions.ignoreSslError != null) {
+      if (requestOptions.ignoreSslError != undefined) {
         this._ignoreSslError = requestOptions.ignoreSslError
       }
 
       this._socketTimeout = requestOptions.socketTimeout
 
-      if (requestOptions.allowRedirects != null) {
+      if (requestOptions.allowRedirects != undefined) {
         this._allowRedirects = requestOptions.allowRedirects
       }
 
-      if (requestOptions.allowRedirectDowngrade != null) {
+      if (requestOptions.allowRedirectDowngrade != undefined) {
         this._allowRedirectDowngrade = requestOptions.allowRedirectDowngrade
       }
 
-      if (requestOptions.maxRedirects != null) {
+      if (requestOptions.maxRedirects != undefined) {
         this._maxRedirects = Math.max(requestOptions.maxRedirects, 0)
       }
 
-      if (requestOptions.keepAlive != null) {
+      if (requestOptions.keepAlive != undefined) {
         this._keepAlive = requestOptions.keepAlive
       }
 
-      if (requestOptions.allowRetries != null) {
+      if (requestOptions.allowRetries != undefined) {
         this._allowRetries = requestOptions.allowRetries
       }
 
-      if (requestOptions.maxRetries != null) {
+      if (requestOptions.maxRetries != undefined) {
         this._maxRetries = requestOptions.maxRetries
       }
     }
@@ -337,7 +343,7 @@ export class HttpClient {
 
     // Only perform retries on reads since writes may not be idempotent.
     const maxTries: number =
-      this._allowRetries && RetryableHttpVerbs.includes(verb)
+      this._allowRetries && RetryableHttpVerbs.has(verb)
         ? this._maxRetries + 1
         : 1
     let numTries = 0
@@ -361,19 +367,17 @@ export class HttpClient {
           }
         }
 
-        if (authenticationHandler) {
-          return authenticationHandler.handleAuthentication(this, info, data)
-        } else {
-          // We have received an unauthorized response but have no handlers to handle it.
-          // Let the response return to the caller.
-          return response
-        }
+        return authenticationHandler
+          ? authenticationHandler.handleAuthentication(this, info, data)
+          : // We have received an unauthorized response but have no handlers to handle it.
+            // Let the response return to the caller.
+            response
       }
 
       let redirectsRemaining: number = this._maxRedirects
       while (
         response.message.statusCode &&
-        HttpRedirectCodes.includes(response.message.statusCode) &&
+        HttpRedirectCodes.has(response.message.statusCode) &&
         this._allowRedirects &&
         redirectsRemaining > 0
       ) {
@@ -416,7 +420,7 @@ export class HttpClient {
 
       if (
         !response.message.statusCode ||
-        !HttpResponseRetryCodes.includes(response.message.statusCode)
+        !HttpResponseRetryCodes.has(response.message.statusCode)
       ) {
         // If not a retry code, return immediately instead of retrying
         return response
@@ -457,11 +461,11 @@ export class HttpClient {
       function callbackForResult(err?: Error, res?: HttpClientResponse): void {
         if (err) {
           reject(err)
-        } else if (!res) {
+        } else if (res) {
+          resolve(res)
+        } else {
           // If `err` is not passed, then `res` must be passed.
           reject(new Error('Unknown error'))
-        } else {
-          resolve(res)
         }
       }
 
@@ -509,7 +513,7 @@ export class HttpClient {
     })
 
     // If we ever get disconnected, we want the socket to timeout eventually
-    req.setTimeout(this._socketTimeout || 3 * 60000, () => {
+    req.setTimeout(this._socketTimeout || 3 * 60_000, () => {
       if (socket) {
         socket.end()
       }
@@ -573,13 +577,13 @@ export class HttpClient {
     info.options = <RequestOptions>{}
     info.options.host = info.parsedUrl.hostname
     info.options.port = info.parsedUrl.port
-      ? parseInt(info.parsedUrl.port)
+      ? Number.parseInt(info.parsedUrl.port)
       : defaultPort
     info.options.path =
       (info.parsedUrl.pathname || '') + (info.parsedUrl.search || '')
     info.options.method = method
     info.options.headers = this._mergeHeaders(headers)
-    if (this.userAgent != null) {
+    if (this.userAgent != undefined) {
       info.options.headers['user-agent'] = this.userAgent
     }
 
@@ -653,11 +657,15 @@ export class HttpClient {
             proxyAuth: `${proxyUrl.username}:${proxyUrl.password}`
           }),
           host: proxyUrl.hostname,
-          port: proxyUrl.port
+          port: Number.parseInt(proxyUrl.port)
         }
       }
 
-      let tunnelAgent: Function
+      let tunnelAgent:
+        | typeof tunnel.httpsOverHttps
+        | typeof tunnel.httpsOverHttp
+        | typeof tunnel.httpOverHttps
+        | typeof tunnel.httpOverHttp
       const overHttps = proxyUrl.protocol === 'https:'
       if (usingSsl) {
         tunnelAgent = overHttps ? tunnel.httpsOverHttps : tunnel.httpsOverHttp
@@ -703,7 +711,7 @@ export class HttpClient {
     const usingSsl = parsedUrl.protocol === 'https:'
     proxyAgent = new ProxyAgent({
       uri: proxyUrl.href,
-      pipelining: !this._keepAlive ? 0 : 1,
+      pipelining: this._keepAlive ? 1 : 0,
       ...((proxyUrl.username || proxyUrl.password) && {
         token: `${proxyUrl.username}:${proxyUrl.password}`
       })
@@ -732,6 +740,7 @@ export class HttpClient {
     res: HttpClientResponse,
     options?: RequestOptions
   ): Promise<TypedResponse<T>> {
+    // eslint-disable-next-line no-async-promise-executor
     return new Promise<TypedResponse<T>>(async (resolve, reject) => {
       const statusCode = res.message.statusCode || 0
 
@@ -748,10 +757,11 @@ export class HttpClient {
 
       // get the result from the body
 
+      // eslint-disable-next-line unicorn/consistent-function-scoping
       function dateTimeDeserializer(_key: any, value: any): any {
         if (typeof value === 'string') {
           const a = new Date(value)
-          if (!isNaN(a.valueOf())) {
+          if (!Number.isNaN(a.valueOf())) {
             return a
           }
         }
@@ -765,6 +775,7 @@ export class HttpClient {
       try {
         contents = await res.readBody()
         if (contents && contents.length > 0) {
+          // eslint-disable-next-line unicorn/prefer-ternary
           if (options && options.deserializeDates) {
             obj = JSON.parse(contents, dateTimeDeserializer)
           } else {
@@ -775,7 +786,7 @@ export class HttpClient {
         }
 
         response.headers = res.message.headers
-      } catch (err) {
+      } catch {
         // Invalid resource (contents not json);  leaving result obj null
       }
 
@@ -805,4 +816,5 @@ export class HttpClient {
 }
 
 const lowercaseKeys = (obj: {[index: string]: any}): any =>
+  // eslint-disable-next-line unicorn/no-array-reduce
   Object.keys(obj).reduce((c: any, k) => ((c[k.toLowerCase()] = obj[k]), c), {})

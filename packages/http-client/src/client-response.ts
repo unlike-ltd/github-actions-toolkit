@@ -7,7 +7,7 @@ export class HttpClientResponse {
 
   message: IncomingMessage
   async readBody(): Promise<string> {
-    return new Promise<string>(async resolve => {
+    return new Promise<string>(resolve => {
       let output = Buffer.alloc(0)
 
       this.message.on('data', (chunk: Buffer) => {
@@ -21,7 +21,7 @@ export class HttpClientResponse {
   }
 
   async readBodyBuffer?(): Promise<Buffer> {
-    return new Promise<Buffer>(async resolve => {
+    return new Promise<Buffer>(resolve => {
       const chunks: Buffer[] = []
 
       this.message.on('data', (chunk: Buffer) => {

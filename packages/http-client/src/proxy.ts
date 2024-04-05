@@ -1,3 +1,4 @@
+/* eslint-disable turbo/no-undeclared-env-vars */
 export function getProxyUrl(reqUrl: URL): URL | undefined {
   const usingSsl = reqUrl.protocol === 'https:'
 
@@ -6,6 +7,7 @@ export function getProxyUrl(reqUrl: URL): URL | undefined {
   }
 
   const proxyVar = (() => {
+    // eslint-disable-next-line unicorn/prefer-ternary
     if (usingSsl) {
       return process.env['https_proxy'] || process.env['HTTPS_PROXY']
     } else {
@@ -59,7 +61,7 @@ export function checkBypass(reqUrl: URL): boolean {
   for (const upperNoProxyItem of noProxy
     .split(',')
     .map(x => x.trim().toUpperCase())
-    .filter(x => x)) {
+    .filter(Boolean)) {
     if (
       upperNoProxyItem === '*' ||
       upperReqHosts.some(
