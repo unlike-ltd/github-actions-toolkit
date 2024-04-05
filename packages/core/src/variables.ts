@@ -1,7 +1,7 @@
 import type {InputOptions} from './types.js'
 
 import {EOL} from 'node:os'
-import {delimiter} from 'node:path'
+import path from 'node:path'
 
 import {issue, issueCommand} from './lib/command.js'
 import {issueFileCommand, prepareKeyValueMessage} from './lib/file-command.js'
@@ -44,7 +44,7 @@ export const addPath = (inputPath: string): void => {
   } else {
     issueCommand('add-path', {}, inputPath)
   }
-  process.env['PATH'] = `${inputPath}${delimiter}${process.env['PATH']}`
+  process.env['PATH'] = `${inputPath}${path.delimiter}${process.env['PATH']}`
 }
 
 /**
