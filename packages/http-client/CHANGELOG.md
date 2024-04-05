@@ -1,5 +1,11 @@
 # @unlike/github-actions-http-client
 
+## 0.2.0
+
+### Minor Changes
+
+- [#288](https://github.com/unlike-ltd/github-actions-toolkit/pull/288) [`5c49d3b`](https://github.com/unlike-ltd/github-actions-toolkit/commit/5c49d3b5b8f5e6117e87a8cc3815735d6ed0d682) Thanks [@andykenward](https://github.com/andykenward)! - chore(deps): bump undici to 5.28.4
+
 ## 0.1.0
 
 ### Minor Changes
