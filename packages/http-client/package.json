@@ -33,7 +33,7 @@
     "undici": "^5.28.4"
   },
   "devDependencies": {
-    "@types/node": "20.11.17",
+    "@types/node": "20.12.5",
     "@types/tunnel": "0.0.7",
     "esbuild": "0.20.2",
     "proxy": "2.1.1",

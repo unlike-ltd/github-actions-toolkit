@@ -36,7 +36,7 @@
     "@unlike/github-actions-http-client": "workspace:*"
   },
   "devDependencies": {
-    "@types/node": "20.11.17",
+    "@types/node": "20.12.5",
     "esbuild": "0.20.2",
     "tsconfig": "workspace:*",
     "tsup": "8.0.2",
