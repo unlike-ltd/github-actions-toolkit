@@ -1,5 +1,11 @@
 # @unlike/github-actions-http-client
 
+## 0.2.1
+
+### Patch Changes
+
+- [`34c2f6e`](https://github.com/unlike-ltd/github-actions-toolkit/commit/34c2f6e4196180b2c6d29d9cbb94bcc0b3f77133) Thanks [@andykenward](https://github.com/andykenward)! - feat: enable npm provenance
+
 ## 0.2.0
 
 ### Minor Changes
